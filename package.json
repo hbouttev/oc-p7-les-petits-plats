@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/hbouttev/oc-p7-les-petits-plats/issues"
   },
-  "homepage": "https://github.com/hbouttev/oc-p7-les-petits-plats#readme"
+  "homepage": "https://github.com/hbouttev/oc-p7-les-petits-plats#readme",
+  "devDependencies": {
+    "eslint": "^8.42.0",
+    "eslint-config-prettier": "^8.8.0",
+    "prettier": "2.8.8"
+  }
 }
