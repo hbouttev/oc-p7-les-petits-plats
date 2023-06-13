@@ -1,0 +1,19 @@
+{
+  "name": "oc-p7-les-petits-plats",
+  "version": "1.0.0",
+  "description": "Project 7 of OpenClassrooms React development course",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hbouttev/oc-p7-les-petits-plats.git"
+  },
+  "author": "Hadrien Boutteville",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hbouttev/oc-p7-les-petits-plats/issues"
+  },
+  "homepage": "https://github.com/hbouttev/oc-p7-les-petits-plats#readme"
+}
