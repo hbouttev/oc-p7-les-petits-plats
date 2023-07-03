@@ -4,7 +4,13 @@
   "description": "Project 7 of OpenClassrooms React development course",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "server-sirv": "sirv --dev --no-clear --port 3002",
+    "server": "live-server --no-browser --port=3002",
+    "lint": "eslint .",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-parcel": "parcel build index.html",
+    "dev-parcel": "parcel index.html",
+    "start-parcel": "npm-run-all build-parcel dev-parcel"
   },
   "repository": {
     "type": "git",
@@ -17,8 +23,19 @@
   },
   "homepage": "https://github.com/hbouttev/oc-p7-les-petits-plats#readme",
   "devDependencies": {
+    "autoprefixer": "^10.4.14",
     "eslint": "^8.42.0",
     "eslint-config-prettier": "^8.8.0",
-    "prettier": "2.8.8"
+    "live-server": "^1.2.2",
+    "nodemon": "^2.0.22",
+    "npm-run-all": "^4.1.5",
+    "parcel": "^2.9.2",
+    "postcss": "^8.4.24",
+    "prettier": "2.8.8",
+    "sass": "^1.63.4",
+    "sirv-cli": "^2.0.2"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.0"
   }
 }
