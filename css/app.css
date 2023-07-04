@@ -1,0 +1,68 @@
+body {
+    --bs-body-font-family: 'Manrope', var(--bs-font-sans-serif);
+    --secondary-font: 'Anton', sans-serif;
+    --secondary-color: #FFD15B;
+}
+
+.logo-text {
+    font-family: var(--secondary-font);
+}
+
+.hero-background {
+    background: no-repeat center center url('../assets/images/hero-from-figma.png');
+    background-size: cover;
+    height: 667px; /* to remove after inner component have there height and padding / margin, replace with padding ? */
+    /*padding: 0;*/
+}
+
+.hero-image {
+    position: absolute;
+    height: inherit;
+    width: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+.hero-title {
+    font-family: var(--secondary-font);
+    color: var(--secondary-color);
+}
+
+.main-search-input {
+    height: 72px;
+}
+
+.main-search-button {
+    height: 52px;
+    width: 52px;
+    stroke: #FFFFFF;
+}
+
+.main-search-button:hover {
+    stroke: #000000;
+}
+
+.main-background {
+    background: #ededed
+}
+
+.card-title {
+    font-family: var(--secondary-font);
+}
+
+.recipe-card-img {
+    height: 253px;
+}
+
+.secondary-bg-color {
+    background-color: var(--secondary-color)!important;
+}
+
+/*
+ *
+ * EN VRAI UTILISER COMPILATION SASS POUR PERSONNALISER BOOTSTRAP
+ * Par ex, pour la police des headings, variables sass et pas css
+ *
+ * en attendant pour aller vite faire une class, mais après faire propre
+ *
+ */
