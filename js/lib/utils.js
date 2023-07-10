@@ -28,3 +28,11 @@ export function removeAllChildNodes(parentElement) {
     parentElement.removeChild(parentElement.firstChild);
   }
 }
+
+/**
+ * @param {String} string string to capitalize first letter of
+ * @returns {String}
+ */
+export function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}

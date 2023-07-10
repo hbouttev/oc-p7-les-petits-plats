@@ -1,3 +1,5 @@
+import { capitalizeFirstLetter } from "../lib/utils.js";
+
 /**
  * Recipe model
  * @class Recipe
@@ -22,11 +24,17 @@ export default class Recipe {
     this.#image = recipeData.image;
     this.#name = recipeData.name;
     this.#servings = recipeData.servings;
-    this.#ingredients = recipeData.ingredients;
     this.#time = recipeData.time;
     this.#description = recipeData.description;
+    // we need to format ingredients and utensils as it's done in backend
+    this.#ingredients = recipeData.ingredients.map((ingredient) => ({
+      ...ingredient,
+      ingredient: capitalizeFirstLetter(ingredient.ingredient.toLowerCase()), // it lowercases proper nouns too, but that's okay for now
+    }));
     this.#appliance = recipeData.appliance;
-    this.#utensils = recipeData.utensils;
+    this.#utensils = recipeData.utensils.map((utensil) =>
+      capitalizeFirstLetter(utensil.toLowerCase())
+    );
   }
 
   get id() {
