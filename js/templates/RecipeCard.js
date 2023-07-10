@@ -32,7 +32,7 @@ export default class RecipeCard {
           >
         </div>
         <div class="card-body p-4">
-          <h5 class="card-title my-2">Limonade de Coco</h5>
+          <h5 class="card-title my-2">${this.#recipe.name}</h5>
           <h6
             class="card-subtitle mt-4 mb-3 text-body-secondary text-uppercase fw-bold"
           >
