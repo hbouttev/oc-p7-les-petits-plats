@@ -18,3 +18,13 @@ export function htmlToElements(html) {
   template.innerHTML = html;
   return template.content.childNodes;
 }
+
+/**
+ * @param {HTMLElement} parentElement parent element to remove all children from
+ * @return {void}
+ */
+export function removeAllChildNodes(parentElement) {
+  while (parentElement.firstChild) {
+    parentElement.removeChild(parentElement.firstChild);
+  }
+}
