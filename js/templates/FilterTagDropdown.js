@@ -6,11 +6,29 @@ import { SearchEventsTypes } from "../events/searchEvents.js";
 // l'implémentation du dropdown comme composant
 
 export default class FilterTagDropdown {
+  /** @type {Filter} */
   #filter;
-  #options = [];
-  #activeOptions = [];
-  #filteredOptions = [];
-  #optionsWithActive = [];
+  /**
+   * All options available for this filter (from search engine)
+   * @type {Set<string>}
+   */
+  #allOptions = new Set();
+  /**
+   * Options selected by the user as a search filter
+   * @type {Set<string>}
+   */
+  #selectedOptions = new Set();
+  /**
+   * Options selectable by the user (all options minus selected options)
+   * @type {Set<string>}
+   */
+  #selectableOptions = new Set();
+  /**
+   * Selectable options after filtering by user input in the dropdown. They are
+   * the one displayed as selectable in the dropdown.
+   * @type {Set<string>}
+   */
+  #filteredSelectableOptions = new Set();
   #element = null;
   #searchInput = null;
   #activeOptionsContainer = null;
@@ -25,14 +43,10 @@ export default class FilterTagDropdown {
   }
 
   #initialize() {
-    // ajouter les this.addEventListener pour les events custom et les this.dispatchEvent pour les events custom
     this.#createFilterTagDropdown();
-    // test
-    this.#updateOptions(["chocolat", "poulet", "citron", "fromage"]);
-    this.#renderFilteredOptions();
     this.#searchInput.addEventListener(
       "input",
-      this.handleFilterInput.bind(this)
+      this.handleFilterOptionsFromInput.bind(this)
     );
     PubSub.subscribe(
       SearchEventsTypes.UpdateFilterOptions,
@@ -57,12 +71,6 @@ export default class FilterTagDropdown {
             <input type="search" class="form-control" aria-label="Search" />
           </div>
           <div class="active-options">
-            <button class="dropdown-item active" type="button">
-              Dropdown item
-            </button>
-            <button class="dropdown-item active" type="button">
-              Dropdown item
-            </button>
           </div>
           <div class="filtered-options">
           </div>
@@ -77,51 +85,119 @@ export default class FilterTagDropdown {
     this.#searchInput = this.#element.querySelector("input");
   }
 
-  #filterOptions(filter) {
-    this.#filteredOptions = this.#options.filter((option) =>
-      option.toLowerCase().includes(filter)
+  /**
+   * Filter the available (not active) options list from the search input value
+   * @param {string} filter
+   */
+  #filterSelectableOptions(filter) {
+    this.#filteredSelectableOptions = new Set(
+      [...this.#selectableOptions].filter((option) =>
+        option.toLowerCase().includes(filter)
+      )
     );
   }
 
-  handleFilterInput() {
+  #updateOptionsWithoutActive() {
+    // this.#selectableOptions = this.#allOptions.filter(
+    //   (option) => !this.#selectedOptions.includes(option)
+    // );
+    this.#selectableOptions = new Set(
+      [...this.#allOptions].filter(
+        (option) => !this.#selectedOptions.has(option)
+      )
+    );
+  }
+
+  /**
+   * Update the options list when a search is made from the dropdown input and
+   * render it.
+   */
+  #filterAndRenderOptions() {
     const filter = this.#searchInput.value.toLowerCase();
-    this.#filterOptions(filter);
+    this.#filterSelectableOptions(filter);
     this.#renderFilteredOptions();
   }
 
   /**
-   * @param {String[]} newOptions new dropdown options list to display
+   * Handle the update of the options list when a search is made
+   * from the dropdown input and render it.
+   */
+  handleFilterOptionsFromInput() {
+    this.#filterAndRenderOptions();
+  }
+
+  /**
+   * Update the options list from a search engine event.
+   * @param {string[]} newOptions new dropdown options list to display
    * @return {void}
    */
   #updateOptions(newOptions) {
-    this.#options = newOptions;
-    this.#optionsWithActive = newOptions.filter(
-      (newOption) => !this.#activeOptions.includes(newOption)
-    );
-    this.handleFilterInput();
+    this.#allOptions = new Set(newOptions);
+    this.#updateOptionsWithoutActive();
+    this.#filterAndRenderOptions();
+  }
 
-    // this.#renderOptions();
+  /**
+   * Notify subscribers that a tag has been added to the search.
+   * @param {string} tag
+   */
+  #notifyAddSearchTag(tag) {
+    PubSub.publish(SearchEventsTypes.AddTag, {
+      id: this.#filter.id,
+      tag: tag,
+    });
+  }
+
+  /**
+   * Notify subscribers that a tag has been removed from the search.
+   * @param {string} tag
+   */
+  #notifyRemoveSearchTag(tag) {
+    PubSub.publish(SearchEventsTypes.RemoveTag, {
+      id: this.#filter.id,
+      tag: tag,
+    });
   }
 
   #renderActiveOptions() {}
 
   #renderFilteredOptions() {
     removeAllChildNodes(this.#filteredOptionsContainer);
-    this.#filteredOptions.forEach((option) => {
+    this.#filteredSelectableOptions.forEach((option) => {
       const optionElement = htmlToElement(`
         <button class="dropdown-item" type="button">${option}</button>
       `);
+      optionElement.addEventListener("click", () => {
+        // if option is not active, add it to active options, else remove it
+        // and rerender filtered selectable options
+        if (!optionElement.classList.contains("active")) {
+          this.#selectableOptions.delete(option);
+          this.#selectedOptions.add(option);
+          optionElement.classList.add("active");
+          this.#activeOptionsContainer.appendChild(optionElement);
+          this.#notifyAddSearchTag(option);
+        } else {
+          this.#selectedOptions.delete(option);
+          this.#selectableOptions.add(option);
+          optionElement.classList.remove("active");
+          this.#filteredOptionsContainer.appendChild(optionElement);
+          this.#filterAndRenderOptions();
+          this.#notifyRemoveSearchTag(option);
+        }
+      });
       this.#filteredOptionsContainer.appendChild(optionElement);
     });
   }
 
   /**
    * Handler for the update filter options event, implements PubSub callback
-   * @param {String} event topic name
-   * @param {String[]} newOptions new dropdown options list
+   * @param {string} event topic name
+   * @param {string} id filter id
+   * @param {string[]} options new dropdown options list
    */
-  handleUpdateFilterOptions(event, newOptions) {
-    this.#updateOptions(newOptions);
+  handleUpdateFilterOptions(event, { id, options }) {
+    if (id !== this.#filter.id) return;
+    this.#updateOptions(options);
   }
 
   get element() {
