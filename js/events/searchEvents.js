@@ -1,7 +1,7 @@
 export const SearchEventsTypes = {
   AddTag: "addSearchTag",
   RemoveTag: "removeSearchTag",
-  GlobalSearch: "globalSearch",
+  MainSearch: "mainSearch",
   UpdateFilterOptions: "updateFilterOptions",
   UpdateSearchResult: "updateSearchResult",
 };
