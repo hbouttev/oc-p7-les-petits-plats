@@ -1,5 +1,7 @@
-import { htmlToElement } from "../lib/utils.js";
+import { htmlToElement, removeAllChildNodes } from "../lib/utils.js";
 import RecipeCard from "./RecipeCard.js";
+import PubSub from "../events/PubSub.js";
+import { SearchEventsTypes } from "../events/searchEvents.js";
 
 export default class RecipeCardsList {
   #recipeCards = [];
@@ -15,6 +17,10 @@ export default class RecipeCardsList {
 
   #initialize() {
     this.#createRecipeCardsList();
+    PubSub.subscribe(
+      SearchEventsTypes.UpdateSearchResult,
+      this.handleUpdateSearchResult.bind(this)
+    );
   }
 
   #createRecipeCardsList() {
@@ -23,6 +29,10 @@ export default class RecipeCardsList {
       </div>
     `;
     this.#element = htmlToElement(recipeCardsListContainer);
+    this.#renderRecipeCardsList();
+  }
+
+  #renderRecipeCardsList() {
     const recipeCardContainer = `
       <div class="col">
       </div>
@@ -32,6 +42,16 @@ export default class RecipeCardsList {
       cardContainer.appendChild(recipeCard.element);
       this.#element.appendChild(cardContainer);
     });
+  }
+
+  #updateRecipeCardsList() {
+    removeAllChildNodes(this.#element);
+    this.#renderRecipeCardsList();
+  }
+
+  handleUpdateSearchResult(event, { recipes }) {
+    this.#recipeCards = recipes.map((recipe) => new RecipeCard(recipe));
+    this.#updateRecipeCardsList();
   }
 
   get element() {
