@@ -4,6 +4,7 @@ import RecipeCardsList from "./templates/RecipeCardsList.js";
 import { Filters } from "./search/SearchEngine.js";
 import Filter from "./models/Filter.js";
 import FilterTagDropdownsList from "./templates/FilterTagDropdownsList.js";
+import SearchEngine from "./search/SearchEngine.js";
 
 export default class App {
   #recipesApi;
@@ -36,6 +37,7 @@ export default class App {
       ({ displayName, id }) => new Filter(displayName, id)
     );
     const filterTagDropdownsList = new FilterTagDropdownsList(filters);
+    SearchEngine.initialize(recipes);
     this.#dropdownsFiltersContainer.appendChild(filterTagDropdownsList.element);
     this.#recipesContainer.appendChild(recipeCardsList.element);
   }
