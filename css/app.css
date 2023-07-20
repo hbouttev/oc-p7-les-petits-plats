@@ -4,6 +4,31 @@ body {
     --secondary-color: #FFD15B;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+    height: 4px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
 .logo-text {
     font-family: var(--secondary-font);
 }
@@ -55,7 +80,11 @@ body {
 }
 
 .secondary-bg-color {
-    background-color: var(--secondary-color)!important;
+    background-color: var(--secondary-color) !important;
+}
+
+.options {
+    max-height: 250px;
 }
 
 /*
