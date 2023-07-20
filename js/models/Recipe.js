@@ -5,14 +5,23 @@ import { capitalizeFirstLetter } from "../lib/utils.js";
  * @class Recipe
  */
 export default class Recipe {
+  /** @type {number} */
   #id;
+  /** @type {string} */
   #image;
+  /** @type {string} */
   #name;
+  /** @type {number} */
   #servings;
+  /** @type {Object[]} */
   #ingredients;
+  /** @type {number} */
   #time;
+  /** @type {string} */
   #description;
+  /** @type {string} */
   #appliance;
+  /** @type {string[]} */
   #utensils;
 
   /**
