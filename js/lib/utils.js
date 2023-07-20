@@ -1,5 +1,5 @@
 /**
- * @param {String} html representing a single element
+ * @param {string} html representing a single element
  * @return {ChildNode}
  */
 export function htmlToElement(html) {
@@ -10,7 +10,7 @@ export function htmlToElement(html) {
 }
 
 /**
- * @param {String} html representing any number of sibling elements
+ * @param {string} html representing any number of sibling elements
  * @return {NodeList}
  */
 export function htmlToElements(html) {
@@ -30,8 +30,8 @@ export function removeAllChildNodes(parentElement) {
 }
 
 /**
- * @param {String} string string to capitalize first letter of
- * @returns {String}
+ * @param {string} string string to capitalize first letter of
+ * @returns {string}
  */
 export function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);

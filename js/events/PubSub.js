@@ -9,7 +9,7 @@ export default class PubSub {
 
   /**
    * Subscribe to an event
-   * @param {String} event topic name
+   * @param {string} event topic name
    * @param {Function} callback callback function
    * @returns {{unsubscribe(): void}} object with method to unsubscribe from topic
    */
@@ -28,7 +28,7 @@ export default class PubSub {
 
   /**
    * Publish an event with some data
-   * @param {String} event topic name
+   * @param {string} event topic name
    * @param {Object} data data to send to subscribers
    */
   static publish(event, data) {
