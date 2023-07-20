@@ -70,9 +70,11 @@ export default class FilterTagDropdown {
           <div class="px-4 py-3">
             <input type="search" class="form-control" aria-label="Search" />
           </div>
-          <div class="active-options">
-          </div>
-          <div class="filtered-options">
+          <div class="options overflow-auto">
+            <div class="active-options">
+            </div>
+            <div class="filtered-options">
+            </div>
           </div>
         </div>
       </div>
