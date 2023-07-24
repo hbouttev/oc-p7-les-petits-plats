@@ -106,6 +106,7 @@ export default class SearchEngine {
     this.#filteredRecipesByIngredients = new Set(allRecipesIds);
     this.#filteredRecipesByAppliances = new Set(allRecipesIds);
     this.#filteredRecipesByUtensils = new Set(allRecipesIds);
+    this.#filteredRecipesSearchInput = new Set(allRecipesIds);
 
     PubSub.subscribe(
       SearchEventsTypes.MainSearch,
