@@ -145,7 +145,7 @@ export default class FilterTagDropdown {
    */
   #notifyAddSearchTag(tag) {
     PubSub.publish(SearchEventsTypes.AddTag, {
-      id: this.#filter.id,
+      filterId: this.#filter.id,
       tag: tag,
     });
   }
@@ -156,7 +156,7 @@ export default class FilterTagDropdown {
    */
   #notifyRemoveSearchTag(tag) {
     PubSub.publish(SearchEventsTypes.RemoveTag, {
-      id: this.#filter.id,
+      filterId: this.#filter.id,
       tag: tag,
     });
   }
@@ -194,11 +194,11 @@ export default class FilterTagDropdown {
   /**
    * Handler for the update filter options event, implements PubSub callback
    * @param {string} event topic name
-   * @param {string} id filter id
+   * @param {string} filterId filter id
    * @param {string[]} options new dropdown options list
    */
-  handleUpdateFilterOptions(event, { id, options }) {
-    if (id !== this.#filter.id) return;
+  handleUpdateFilterOptions(event, { filterId, options }) {
+    if (filterId !== this.#filter.id) return;
     this.#updateOptions(options);
   }
 

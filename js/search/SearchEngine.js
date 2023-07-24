@@ -130,15 +130,15 @@ export default class SearchEngine {
 
   static #notifyUpdateFiltersOptions() {
     PubSub.publish(SearchEventsTypes.UpdateFilterOptions, {
-      id: Filters.ingredients.id,
+      filterId: Filters.ingredients.id,
       options: [...this.#filteredIngredients],
     });
     PubSub.publish(SearchEventsTypes.UpdateFilterOptions, {
-      id: Filters.appliances.id,
+      filterId: Filters.appliances.id,
       options: [...this.#filteredAppliances],
     });
     PubSub.publish(SearchEventsTypes.UpdateFilterOptions, {
-      id: Filters.utensils.id,
+      filterId: Filters.utensils.id,
       options: [...this.#filteredUtensils],
     });
   }
@@ -159,9 +159,9 @@ export default class SearchEngine {
   }
 
   static handleUpdateSearchTags(event, data) {
-    const { id, tag } = data;
+    const { filterId, tag } = data;
     if (event === SearchEventsTypes.AddTag) {
-      switch (id) {
+      switch (filterId) {
         case Filters.ingredients.id:
           this.#ingredientsSearchTags.add(tag);
           this.#filterRecipesByIngredients();
@@ -178,10 +178,10 @@ export default class SearchEngine {
           this.#updateSearchResult();
           break;
         default:
-          console.error(`Unknown filter id ${id}`);
+          console.error(`Unknown filter id ${filterId}`);
       }
     } else if (event === SearchEventsTypes.RemoveTag) {
-      switch (id) {
+      switch (filterId) {
         case Filters.ingredients.id:
           this.#ingredientsSearchTags.delete(tag);
           this.#filterRecipesByIngredients();
@@ -198,7 +198,7 @@ export default class SearchEngine {
           this.#updateSearchResult();
           break;
         default:
-          console.error(`Unknown filter id ${id}`);
+          console.error(`Unknown filter id ${filterId}`);
       }
     }
   }
