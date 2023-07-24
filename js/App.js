@@ -4,6 +4,7 @@ import RecipeCardsList from "./templates/RecipeCardsList.js";
 import { Filters } from "./search/SearchEngine.js";
 import Filter from "./models/Filter.js";
 import FilterTagDropdownsList from "./templates/FilterTagDropdownsList.js";
+import RecipesCounter from "./templates/RecipesCounter.js";
 import SearchEngine from "./search/SearchEngine.js";
 import PubSub from "./events/PubSub.js";
 import { SearchEventsTypes } from "./events/searchEvents.js";
@@ -12,7 +13,8 @@ export default class App {
   #recipesApi;
   #recipes;
   #dropdownsFiltersContainer;
-  #searchtagsContainer;
+  #searchTagsContainer;
+  #recipesCounterContainer;
   #recipesContainer;
   #mainSearchInput;
 
@@ -22,8 +24,11 @@ export default class App {
     this.#dropdownsFiltersContainer = document.querySelector(
       ".dropdowns-filters-list-container"
     );
-    this.#searchtagsContainer = document.querySelector(
+    this.#searchTagsContainer = document.querySelector(
       ".searchtags-list-container"
+    );
+    this.#recipesCounterContainer = document.querySelector(
+      ".recipes-counter-container"
     );
     this.#recipesContainer = document.querySelector(".recipes-list-container");
     this.#mainSearchInput = document.querySelector(".main-search-input");
@@ -42,7 +47,9 @@ export default class App {
     );
     const filterTagDropdownsList = new FilterTagDropdownsList(filters);
     SearchEngine.initialize(recipes);
+    const recipesCounter = new RecipesCounter(recipes.length);
     this.#dropdownsFiltersContainer.appendChild(filterTagDropdownsList.element);
+    this.#recipesCounterContainer.appendChild(recipesCounter.element);
     this.#recipesContainer.appendChild(recipeCardsList.element);
     this.#mainSearchInput.addEventListener("input", (event) => {
       if (event.target.value.length >= 3) {
