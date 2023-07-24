@@ -1,7 +1,9 @@
 import { htmlToElement } from "../lib/utils.js";
 
 export default class RecipeCard {
+  /** @type {Recipe} */
   #recipe;
+  /** @type {HTMLElement} */
   #element = null;
 
   /**

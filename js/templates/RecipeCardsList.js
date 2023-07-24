@@ -4,7 +4,9 @@ import PubSub from "../events/PubSub.js";
 import { SearchEventsTypes } from "../events/searchEvents.js";
 
 export default class RecipeCardsList {
+  /** @type {RecipeCard[]} */
   #recipeCards = [];
+  /** @type {HTMLElement} */
   #element = null;
 
   /**

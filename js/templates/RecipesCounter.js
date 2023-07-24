@@ -3,8 +3,11 @@ import PubSub from "../events/PubSub.js";
 import { SearchEventsTypes } from "../events/searchEvents.js";
 
 export default class RecipeCounter {
+  /** @type {number} */
   #numberOfRecipes;
+  /** @type {HTMLElement} */
   #element = null;
+  /** @type {HTMLElement} */
   #counterElement = null;
 
   /**

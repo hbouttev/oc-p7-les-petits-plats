@@ -2,7 +2,9 @@ import { htmlToElement } from "../lib/utils.js";
 import FilterTagDropdown from "./FilterTagDropdown.js";
 
 export default class FilterTagDropdownsList {
+  /** @type {FilterTagDropdown[]} */
   #filterTagDropdowns = [];
+  /** @type {HTMLElement} */
   #element = null;
 
   /**

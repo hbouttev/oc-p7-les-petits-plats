@@ -29,9 +29,13 @@ export default class FilterTagDropdown {
    * @type {Set<string>}
    */
   #filteredSelectableOptions = new Set();
+  /** @type {HTMLElement} */
   #element = null;
+  /** @type {HTMLInputElement} */
   #searchInput = null;
+  /** @type {HTMLElement} */
   #activeOptionsContainer = null;
+  /** @type {HTMLElement} */
   #filteredOptionsContainer = null;
 
   /**
