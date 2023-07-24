@@ -5,6 +5,8 @@ import { Filters } from "./search/SearchEngine.js";
 import Filter from "./models/Filter.js";
 import FilterTagDropdownsList from "./templates/FilterTagDropdownsList.js";
 import SearchEngine from "./search/SearchEngine.js";
+import PubSub from "./events/PubSub.js";
+import { SearchEventsTypes } from "./events/searchEvents.js";
 
 export default class App {
   #recipesApi;
@@ -12,6 +14,7 @@ export default class App {
   #dropdownsFiltersContainer;
   #searchtagsContainer;
   #recipesContainer;
+  #mainSearchInput;
 
   constructor() {
     this.#recipesApi = new RecipesApi("data/recipes.json");
@@ -23,6 +26,7 @@ export default class App {
       ".searchtags-list-container"
     );
     this.#recipesContainer = document.querySelector(".recipes-list-container");
+    this.#mainSearchInput = document.querySelector(".main-search-input");
   }
 
   /**
@@ -40,5 +44,12 @@ export default class App {
     SearchEngine.initialize(recipes);
     this.#dropdownsFiltersContainer.appendChild(filterTagDropdownsList.element);
     this.#recipesContainer.appendChild(recipeCardsList.element);
+    this.#mainSearchInput.addEventListener("input", (event) => {
+      if (event.target.value.length >= 3) {
+        PubSub.publish(SearchEventsTypes.MainSearch, {
+          search: event.target.value,
+        });
+      }
+    });
   }
 }

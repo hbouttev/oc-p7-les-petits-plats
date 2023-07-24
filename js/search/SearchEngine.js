@@ -108,6 +108,11 @@ export default class SearchEngine {
     this.#filteredRecipesByUtensils = new Set(allRecipesIds);
 
     PubSub.subscribe(
+      SearchEventsTypes.MainSearch,
+      this.handleUpdateSearchInput.bind(this)
+    );
+
+    PubSub.subscribe(
       SearchEventsTypes.AddTag,
       this.handleUpdateSearchTags.bind(this)
     );
@@ -119,6 +124,8 @@ export default class SearchEngine {
 
     this.#notifyUpdateFiltersOptions();
   }
+
+  // Notify events methods
 
   static #notifyUpdateFiltersOptions() {
     PubSub.publish(SearchEventsTypes.UpdateFilterOptions, {
@@ -139,6 +146,15 @@ export default class SearchEngine {
     PubSub.publish(SearchEventsTypes.UpdateSearchResult, {
       recipes: this.#globalRecipesSearchResult,
     });
+  }
+
+  // Handle events methods
+
+  static handleUpdateSearchInput(event, data) {
+    const { search } = data;
+    this.#mainSearchInput = search;
+    this.#filterRecipesBySearchInput();
+    this.#updateSearchResult();
   }
 
   static handleUpdateSearchTags(event, data) {
@@ -182,6 +198,41 @@ export default class SearchEngine {
           break;
         default:
           console.error(`Unknown filter id ${id}`);
+      }
+    }
+  }
+
+  // Filter methods
+
+  static #filterRecipesBySearchInput() {
+    if (this.#mainSearchInput === "") {
+      this.#filteredRecipesSearchInput = new Set(this.#allRecipesById.keys());
+      return;
+    }
+    this.#filteredRecipesSearchInput.clear();
+    for (const recipe of this.#allRecipes) {
+      if (
+        recipe.name.toLowerCase().includes(this.#mainSearchInput.toLowerCase())
+      ) {
+        this.#filteredRecipesSearchInput.add(recipe.id);
+      }
+      if (
+        recipe.description
+          .toLowerCase()
+          .includes(this.#mainSearchInput.toLowerCase())
+      ) {
+        this.#filteredRecipesSearchInput.add(recipe.id);
+      }
+      if (
+        recipe.ingredients
+          .map((ingredient) => ingredient.ingredient)
+          .some((ingredient) =>
+            ingredient
+              .toLowerCase()
+              .includes(this.#mainSearchInput.toLowerCase())
+          )
+      ) {
+        this.#filteredRecipesSearchInput.add(recipe.id);
       }
     }
   }
@@ -260,10 +311,11 @@ export default class SearchEngine {
    */
   static #getIntersectionOfFilteredRecipes() {
     const intersection = new Set();
-    for (const recipeId of this.#filteredRecipesByIngredients) {
+    for (const recipeId of this.#filteredRecipesSearchInput) {
       if (
         this.#filteredRecipesByAppliances.has(recipeId) &&
-        this.#filteredRecipesByUtensils.has(recipeId)
+        this.#filteredRecipesByUtensils.has(recipeId) &&
+        this.#filteredRecipesByIngredients.has(recipeId)
       ) {
         intersection.add(recipeId);
       }
