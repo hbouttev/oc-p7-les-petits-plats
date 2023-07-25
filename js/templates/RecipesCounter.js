@@ -42,7 +42,6 @@ export default class RecipeCounter {
 
   handleUpdateNumberOfRecipes(event, data) {
     const { recipes } = data;
-    console.log("recipes conter", recipes);
     this.#numberOfRecipes = recipes.length;
     this.#updateRecipeCounter();
   }
