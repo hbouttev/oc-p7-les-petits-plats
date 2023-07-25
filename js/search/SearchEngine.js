@@ -42,6 +42,7 @@ export const Filters = {
 //
 
 export default class SearchEngine {
+  // Data cache
   /** @type {Recipe[]} */
   static #allRecipes = [];
   /** @type {Map<Recipe.id, Recipe>} */
@@ -53,15 +54,17 @@ export default class SearchEngine {
   /** @type {Set<string>} */
   static #allUtensils = new Set();
 
+  // Search tags sent by the user
   /** @type {Set<string>} */
   static #ingredientsSearchTags = new Set();
   /** @type {Set<string>} */
   static #appliancesSearchTags = new Set();
   /** @type {Set<string>} */
   static #utensilsSearchTags = new Set();
-
+  // Search input sent by the user
   static #mainSearchInput = "";
 
+  // Recipes from search results by inputs
   /** @type {Set<Recipe.id>} */
   static #filteredRecipesByIngredients = new Set();
   /** @type {Set<Recipe.id>} */
@@ -70,6 +73,8 @@ export default class SearchEngine {
   static #filteredRecipesByUtensils = new Set();
   /** @type {Set<Recipe.id>} */
   static #filteredRecipesSearchInput = new Set();
+
+  // Remaining tags available after search for each filter
   /** @type {Set<string>} */
   static #filteredIngredients = new Set();
   /** @type {Set<string>} */
@@ -77,8 +82,7 @@ export default class SearchEngine {
   /** @type {Set<string>} */
   static #filteredUtensils = new Set();
 
-  // /** @type {Map<Recipe.id, Recipe>} */
-  // static #globalRecipesSearchResult = new Map();
+  // Final recipes search result after intersection of all inputs results
   /** @type {Recipe[]} */
   static #globalRecipesSearchResult = [];
 
