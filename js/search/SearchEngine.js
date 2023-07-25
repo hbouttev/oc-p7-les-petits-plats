@@ -17,75 +17,55 @@ export const Filters = {
   },
 };
 
-/*
- * There are 3 ways to implement the search engine as a 'singleton':
- *  1. class singleton POO implementation, but this is not really the JS way
- *   with module.
- *  2. JS module, the JS way of single instance. And we're using modules.
- *  3. full static class, with static methods and properties and static
- *   initialization block. This is not really the modern JS way, and not really
- *   a POO singleton, but it works in a full JS class implementation logic.
- *  4. instead of full static class, we can just make an object literal.
- * I'm not sur that for OC project the module way is the best, because we
- * are not really supposed to use modules, even if I use them at least for
- * proper import/export readability. An evaluator could argue about it. But the
- * singleton class implementation is not really the modern JS way, so I'm
- * trying the static class implementation for now. I had to deal with similar
- * implementation in Java, which is class based, but the search engine is not
- * really the definition of a set of static methods and properties.
- *
- * */
-
-//
-// https://www.typescriptlang.org/docs/handbook/2/classes.html#why-no-static-classes
-//
-
 export default class SearchEngine {
   // Data cache
   /** @type {Recipe[]} */
-  static #allRecipes = [];
+  #allRecipes = [];
   /** @type {Map<Recipe.id, Recipe>} */
-  static #allRecipesById = new Map();
+  #allRecipesById = new Map();
   /** @type {Set<string>} */
-  static #allIngredients = new Set();
+  #allIngredients = new Set();
   /** @type {Set<string>} */
-  static #allAppliances = new Set();
+  #allAppliances = new Set();
   /** @type {Set<string>} */
-  static #allUtensils = new Set();
+  #allUtensils = new Set();
 
   // Search tags sent by the user
   /** @type {Set<string>} */
-  static #ingredientsSearchTags = new Set();
+  #ingredientsSearchTags = new Set();
   /** @type {Set<string>} */
-  static #appliancesSearchTags = new Set();
+  #appliancesSearchTags = new Set();
   /** @type {Set<string>} */
-  static #utensilsSearchTags = new Set();
+  #utensilsSearchTags = new Set();
   // Search input sent by the user
-  static #mainSearchInput = "";
+  #mainSearchInput = "";
 
   // Recipes from search results by inputs
   /** @type {Set<Recipe.id>} */
-  static #filteredRecipesByIngredients = new Set();
+  #filteredRecipesByIngredients = new Set();
   /** @type {Set<Recipe.id>} */
-  static #filteredRecipesByAppliances = new Set();
+  #filteredRecipesByAppliances = new Set();
   /** @type {Set<Recipe.id>} */
-  static #filteredRecipesByUtensils = new Set();
+  #filteredRecipesByUtensils = new Set();
   /** @type {Set<Recipe.id>} */
-  static #filteredRecipesSearchInput = new Set();
+  #filteredRecipesSearchInput = new Set();
 
   // Remaining tags available after search for each filter
   /** @type {Set<string>} */
-  static #filteredIngredients = new Set();
+  #filteredIngredients = new Set();
   /** @type {Set<string>} */
-  static #filteredAppliances = new Set();
+  #filteredAppliances = new Set();
   /** @type {Set<string>} */
-  static #filteredUtensils = new Set();
+  #filteredUtensils = new Set();
 
   // Final recipes search result after intersection of all inputs results
   /** @type {Recipe[]} */
-  static #globalRecipesSearchResult = [];
+  #globalRecipesSearchResult = [];
 
-  static initialize(recipes) {
+  /**
+   * @param {Recipe[]} recipes
+   */
+  constructor(recipes) {
     this.#allRecipes = recipes;
     this.#allRecipesById = new Map(
       recipes.map((recipe) => [recipe.id, recipe])
@@ -100,7 +80,10 @@ export default class SearchEngine {
         this.#allUtensils.add(utensil);
       }
     }
+    this.#initialize();
+  }
 
+  #initialize() {
     this.#filteredIngredients = new Set(this.#allIngredients);
     this.#filteredAppliances = new Set(this.#allAppliances);
     this.#filteredUtensils = new Set(this.#allUtensils);
@@ -131,7 +114,7 @@ export default class SearchEngine {
 
   // Notify events methods
 
-  static #notifyUpdateFiltersOptions() {
+  #notifyUpdateFiltersOptions() {
     PubSub.publish(
       SearchEventsTypes.UpdateFilterOptions,
       new Map([
@@ -175,7 +158,7 @@ export default class SearchEngine {
     );
   }
 
-  static #notifyUpdateSearchResult() {
+  #notifyUpdateSearchResult() {
     PubSub.publish(SearchEventsTypes.UpdateSearchResult, {
       recipes: this.#globalRecipesSearchResult,
     });
@@ -183,14 +166,14 @@ export default class SearchEngine {
 
   // Handle events methods
 
-  static handleUpdateSearchInput(event, data) {
+  handleUpdateSearchInput(event, data) {
     const { search } = data;
     this.#mainSearchInput = search;
     this.#filterRecipesBySearchInput();
     this.#updateSearchResult();
   }
 
-  static handleUpdateSearchTags(event, data) {
+  handleUpdateSearchTags(event, data) {
     const { filterId, tag } = data;
     if (event === SearchEventsTypes.AddTag) {
       switch (filterId) {
@@ -235,7 +218,7 @@ export default class SearchEngine {
 
   // Filter methods
 
-  static #filterRecipesBySearchInput() {
+  #filterRecipesBySearchInput() {
     if (this.#mainSearchInput === "") {
       this.#filteredRecipesSearchInput = new Set(this.#allRecipesById.keys());
       return;
@@ -268,7 +251,7 @@ export default class SearchEngine {
     }
   }
 
-  static #filterRecipesByIngredients() {
+  #filterRecipesByIngredients() {
     if (this.#ingredientsSearchTags.size === 0) {
       this.#filteredRecipesByIngredients = new Set(this.#allRecipesById.keys());
       return;
@@ -288,7 +271,7 @@ export default class SearchEngine {
     }
   }
 
-  static #filterRecipesByAppliances() {
+  #filterRecipesByAppliances() {
     if (this.#appliancesSearchTags.size === 0) {
       this.#filteredRecipesByAppliances = new Set(this.#allRecipesById.keys());
       return;
@@ -301,7 +284,7 @@ export default class SearchEngine {
     }
   }
 
-  static #filterRecipesByUtensils() {
+  #filterRecipesByUtensils() {
     if (this.#utensilsSearchTags.size === 0) {
       this.#filteredRecipesByUtensils = new Set(this.#allRecipesById.keys());
       return;
@@ -321,7 +304,7 @@ export default class SearchEngine {
     }
   }
 
-  static #updateFiltersOptions() {
+  #updateFiltersOptions() {
     this.#filteredIngredients.clear();
     this.#filteredAppliances.clear();
     this.#filteredUtensils.clear();
@@ -340,7 +323,7 @@ export default class SearchEngine {
    *
    * @returns {Set<Recipe.id>}
    */
-  static #getIntersectionOfFilteredRecipes() {
+  #getIntersectionOfFilteredRecipes() {
     const intersection = new Set();
     for (const recipeId of this.#filteredRecipesSearchInput) {
       if (
@@ -354,7 +337,7 @@ export default class SearchEngine {
     return intersection;
   }
 
-  static #updateSearchResult() {
+  #updateSearchResult() {
     const intersection = this.#getIntersectionOfFilteredRecipes();
     this.#globalRecipesSearchResult = this.#getRecipesFromIds([
       ...intersection,
@@ -369,7 +352,7 @@ export default class SearchEngine {
    * @param {Recipe.id[]} recipesIds
    * @returns {Recipe[]}
    */
-  static #getRecipesFromIds(recipesIds) {
+  #getRecipesFromIds(recipesIds) {
     return recipesIds.map((id) => this.#allRecipesById.get(id));
   }
 
@@ -379,7 +362,7 @@ export default class SearchEngine {
    * @param {Set<string>} searchTags Search tags included in tags
    * @returns {Set<string>}
    */
-  static #removeSearchTagsFromTags(tags, searchTags) {
+  #removeSearchTagsFromTags(tags, searchTags) {
     return setDifference(tags, searchTags);
   }
 }

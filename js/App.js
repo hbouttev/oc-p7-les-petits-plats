@@ -13,6 +13,8 @@ import { SearchEventsTypes } from "./events/searchEvents.js";
 export default class App {
   /** @type {RecipesApi} */
   #recipesApi;
+  /** @type {SearchEngine} */
+  #searchEngine;
   /** @type {HTMLElement} */
   #dropdownsFiltersContainer;
   /** @type {HTMLElement} */
@@ -52,7 +54,7 @@ export default class App {
     );
     const filterTagDropdownsList = new FilterTagDropdownsList(filters);
     const tagsList = new TagsList();
-    SearchEngine.initialize(recipes);
+    this.#searchEngine = new SearchEngine(recipes);
     const recipesCounter = new RecipesCounter(recipes.length);
     this.#dropdownsFiltersContainer.appendChild(filterTagDropdownsList.element);
     this.#searchTagsContainer.appendChild(tagsList.element);
