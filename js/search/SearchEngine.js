@@ -197,41 +197,39 @@ export default class SearchEngine {
         case Filters.ingredients.id:
           this.#ingredientsSearchTags.add(tag);
           this.#filterRecipesByIngredients();
-          this.#updateSearchResult();
           break;
         case Filters.appliances.id:
           this.#appliancesSearchTags.add(tag);
           this.#filterRecipesByAppliances();
-          this.#updateSearchResult();
           break;
         case Filters.utensils.id:
           this.#utensilsSearchTags.add(tag);
           this.#filterRecipesByUtensils();
-          this.#updateSearchResult();
           break;
         default:
           console.error(`Unknown filter id ${filterId}`);
+          return;
       }
+      this.#updateSearchResult();
     } else if (event === SearchEventsTypes.RemoveTag) {
       switch (filterId) {
         case Filters.ingredients.id:
           this.#ingredientsSearchTags.delete(tag);
           this.#filterRecipesByIngredients();
-          this.#updateSearchResult();
           break;
         case Filters.appliances.id:
           this.#appliancesSearchTags.delete(tag);
           this.#filterRecipesByAppliances();
-          this.#updateSearchResult();
           break;
         case Filters.utensils.id:
           this.#utensilsSearchTags.delete(tag);
           this.#filterRecipesByUtensils();
-          this.#updateSearchResult();
           break;
         default:
           console.error(`Unknown filter id ${filterId}`);
+          return;
       }
+      this.#updateSearchResult();
     }
   }
 
