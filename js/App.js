@@ -59,7 +59,7 @@ export default class App {
     this.#recipesCounterContainer.appendChild(recipesCounter.element);
     this.#recipesContainer.appendChild(recipeCardsList.element);
     this.#mainSearchInput.addEventListener("input", (event) => {
-      if (event.target.value.length >= 3) {
+      if (event.target.value.length >= 3 || event.target.value.length === 0) {
         PubSub.publish(SearchEventsTypes.MainSearch, {
           search: event.target.value,
         });
