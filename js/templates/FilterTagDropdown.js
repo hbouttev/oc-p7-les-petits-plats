@@ -1,4 +1,5 @@
 import { htmlToElement, removeAllChildNodes } from "../lib/utils.js";
+import DropdownOption from "./DropdownOption.js";
 import PubSub from "../events/PubSub.js";
 import { SearchEventsTypes } from "../events/searchEvents.js";
 
@@ -26,7 +27,7 @@ export default class FilterTagDropdown {
   /** @type {HTMLInputElement} */
   #searchInput = null;
   /** @type {HTMLElement} */
-  #activeOptionsContainer = null;
+  #selectedOptionsContainer = null;
   /** @type {HTMLElement} */
   #filteredOptionsContainer = null;
 
@@ -76,7 +77,7 @@ export default class FilterTagDropdown {
       </div>
     `;
     this.#element = htmlToElement(filterTagDropdown);
-    this.#activeOptionsContainer =
+    this.#selectedOptionsContainer =
       this.#element.querySelector(".active-options");
     this.#filteredOptionsContainer =
       this.#element.querySelector(".filtered-options");
@@ -148,33 +149,42 @@ export default class FilterTagDropdown {
     });
   }
 
-  #renderActiveOptions() {}
-
+  /**
+   * Render the filtered options list in the dropdown.
+   * Don't call directly, call filterAndRenderOptions() to filter the options
+   * list before rendering (or manually do it before).
+   */
   #renderFilteredOptions() {
+    removeAllChildNodes(this.#selectedOptionsContainer);
     removeAllChildNodes(this.#filteredOptionsContainer);
-    this.#filteredSelectableOptions.forEach((option) => {
-      const optionElement = htmlToElement(`
-        <button class="dropdown-item" type="button">${option}</button>
-      `);
-      optionElement.addEventListener("click", () => {
-        // if option is not active, add it to active options, else remove it
-        // and rerender filtered selectable options
-        if (!optionElement.classList.contains("active")) {
-          this.#selectableOptions.delete(option);
-          this.#selectedOptions.add(option);
-          optionElement.classList.add("active");
-          this.#activeOptionsContainer.appendChild(optionElement);
-          this.#notifyAddSearchTag(option);
-        } else {
-          this.#selectedOptions.delete(option);
-          this.#selectableOptions.add(option);
-          optionElement.classList.remove("active");
-          this.#filteredOptionsContainer.appendChild(optionElement);
-          this.#filterAndRenderOptions();
-          this.#notifyRemoveSearchTag(option);
-        }
-      });
-      this.#filteredOptionsContainer.appendChild(optionElement);
+    for (const selectedOption of this.#selectedOptions) {
+      const option = new DropdownOption(selectedOption, { active: true });
+      this.#initializeOption(option);
+      this.#selectedOptionsContainer.appendChild(option.element);
+    }
+    for (const filteredOption of this.#filteredSelectableOptions) {
+      const option = new DropdownOption(filteredOption);
+      this.#initializeOption(option);
+      this.#filteredOptionsContainer.appendChild(option.element);
+    }
+  }
+
+  /**
+   * Initialize event listeners for a dropdown option.
+   * @param {DropdownOption} option
+   */
+  #initializeOption(option) {
+    const optionElement = option.element;
+    optionElement.addEventListener("click", () => {
+      if (option.active) {
+        option.active = false;
+        optionElement.remove();
+        this.#notifyRemoveSearchTag(option.option);
+      } else {
+        option.active = true;
+        this.#selectedOptionsContainer.appendChild(optionElement);
+        this.#notifyAddSearchTag(option.option);
+      }
     });
   }
 
