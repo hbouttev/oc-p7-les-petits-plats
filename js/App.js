@@ -10,12 +10,17 @@ import PubSub from "./events/PubSub.js";
 import { SearchEventsTypes } from "./events/searchEvents.js";
 
 export default class App {
+  /** @type {RecipesApi} */
   #recipesApi;
-  #recipes;
+  /** @type {HTMLElement} */
   #dropdownsFiltersContainer;
+  /** @type {HTMLElement} */
   #searchTagsContainer;
+  /** @type {HTMLElement} */
   #recipesCounterContainer;
+  /** @type {HTMLElement} */
   #recipesContainer;
+  /** @type {HTMLInputElement} */
   #mainSearchInput;
 
   constructor() {
