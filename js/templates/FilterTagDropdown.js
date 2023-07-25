@@ -2,17 +2,9 @@ import { htmlToElement, removeAllChildNodes } from "../lib/utils.js";
 import PubSub from "../events/PubSub.js";
 import { SearchEventsTypes } from "../events/searchEvents.js";
 
-// OU : class filterTag et class filterTagDropdown qui extend filterTag avec
-// l'implémentation du dropdown comme composant
-
 export default class FilterTagDropdown {
   /** @type {Filter} */
   #filter;
-  /**
-   * All options available for this filter (from search engine)
-   * @type {Set<string>}
-   */
-  #allOptions = new Set();
   /**
    * Options selected by the user as a search filter
    * @type {Set<string>}
@@ -103,17 +95,6 @@ export default class FilterTagDropdown {
     );
   }
 
-  #updateOptionsWithoutActive() {
-    // this.#selectableOptions = this.#allOptions.filter(
-    //   (option) => !this.#selectedOptions.includes(option)
-    // );
-    this.#selectableOptions = new Set(
-      [...this.#allOptions].filter(
-        (option) => !this.#selectedOptions.has(option)
-      )
-    );
-  }
-
   /**
    * Update the options list when a search is made from the dropdown input and
    * render it.
@@ -134,12 +115,14 @@ export default class FilterTagDropdown {
 
   /**
    * Update the options list from a search engine event.
-   * @param {string[]} newOptions new dropdown options list to display
+   * @param {Map<Filter.id, { searchTags: string[], options: string[] }>} newOptionsMap new dropdown options list to display
    * @return {void}
    */
-  #updateOptions(newOptions) {
-    this.#allOptions = new Set(newOptions);
-    this.#updateOptionsWithoutActive();
+  #updateOptions(newOptionsMap) {
+    const selectedOptions = newOptionsMap.get(this.#filter.id).searchTags;
+    const newOptions = newOptionsMap.get(this.#filter.id).options;
+    this.#selectedOptions = new Set(selectedOptions);
+    this.#selectableOptions = new Set(newOptions);
     this.#filterAndRenderOptions();
   }
 
@@ -198,12 +181,11 @@ export default class FilterTagDropdown {
   /**
    * Handler for the update filter options event, implements PubSub callback
    * @param {string} event topic name
-   * @param {string} filterId filter id
-   * @param {string[]} options new dropdown options list
+   * @param {Map<Filter.id, { searchTags: string[], options: string[] }>} optionsMap new dropdown options list
    */
-  handleUpdateFilterOptions(event, { filterId, options }) {
-    if (filterId !== this.#filter.id) return;
-    this.#updateOptions(options);
+  handleUpdateFilterOptions(event, optionsMap) {
+    if (!optionsMap.has(this.#filter.id)) return;
+    this.#updateOptions(optionsMap);
   }
 
   get element() {

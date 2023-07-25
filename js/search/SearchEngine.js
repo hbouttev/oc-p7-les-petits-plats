@@ -1,12 +1,11 @@
 import { SearchEventsTypes } from "../events/searchEvents.js";
 import PubSub from "../events/PubSub.js";
+import { setDifference } from "../lib/utils.js";
 
 export const Filters = {
-  // move it to the SearchEngine class ?
   ingredients: {
     displayName: "Ingrédients",
     id: "ingredients", // we can directly use the object key as id, but for now we keep it also as a property for readability
-    name: "ingredients", // BETTER THAN ID ? BECAUSE IT'S NOT REALLY AN ID. Or id is ok.
   },
   appliances: {
     displayName: "Appareils",
@@ -133,18 +132,47 @@ export default class SearchEngine {
   // Notify events methods
 
   static #notifyUpdateFiltersOptions() {
-    PubSub.publish(SearchEventsTypes.UpdateFilterOptions, {
-      filterId: Filters.ingredients.id,
-      options: [...this.#filteredIngredients],
-    });
-    PubSub.publish(SearchEventsTypes.UpdateFilterOptions, {
-      filterId: Filters.appliances.id,
-      options: [...this.#filteredAppliances],
-    });
-    PubSub.publish(SearchEventsTypes.UpdateFilterOptions, {
-      filterId: Filters.utensils.id,
-      options: [...this.#filteredUtensils],
-    });
+    PubSub.publish(
+      SearchEventsTypes.UpdateFilterOptions,
+      new Map([
+        [
+          Filters.ingredients.id,
+          {
+            searchTags: [...this.#ingredientsSearchTags],
+            options: [
+              ...this.#removeSearchTagsFromTags(
+                this.#filteredIngredients,
+                this.#ingredientsSearchTags
+              ),
+            ],
+          },
+        ],
+        [
+          Filters.appliances.id,
+          {
+            searchTags: [...this.#appliancesSearchTags],
+            options: [
+              ...this.#removeSearchTagsFromTags(
+                this.#filteredAppliances,
+                this.#appliancesSearchTags
+              ),
+            ],
+          },
+        ],
+        [
+          Filters.utensils.id,
+          {
+            searchTags: [...this.#utensilsSearchTags],
+            options: [
+              ...this.#removeSearchTagsFromTags(
+                this.#filteredUtensils,
+                this.#utensilsSearchTags
+              ),
+            ],
+          },
+        ],
+      ])
+    );
   }
 
   static #notifyUpdateSearchResult() {
@@ -345,5 +373,15 @@ export default class SearchEngine {
    */
   static #getRecipesFromIds(recipesIds) {
     return recipesIds.map((id) => this.#allRecipesById.get(id));
+  }
+
+  /**
+   * Return a Set of remaining tags after removing search tags
+   * @param {Set<string>} tags All tags remaining after search
+   * @param {Set<string>} searchTags Search tags included in tags
+   * @returns {Set<string>}
+   */
+  static #removeSearchTagsFromTags(tags, searchTags) {
+    return setDifference(tags, searchTags);
   }
 }

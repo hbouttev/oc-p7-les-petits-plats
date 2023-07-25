@@ -36,3 +36,16 @@ export function removeAllChildNodes(parentElement) {
 export function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+/**
+ * @param {Set<any>} setA
+ * @param {Set<any>} setB
+ * @returns {Set<any>}
+ */
+export function setDifference(setA, setB) {
+  const difference = new Set(setA);
+  for (const elem of setB) {
+    difference.delete(elem);
+  }
+  return difference;
+}

@@ -6,7 +6,7 @@
  *  - SearchEventsTypes.AddTag: { filterId: string, tag: string }
  *  - SearchEventsTypes.RemoveTag: { filterId: string, tag: string }
  *  - SearchEventsTypes.MainSearch: { search: string }
- *  - SearchEventsTypes.UpdateFilterOptions: { filterId: string, options: string[] }
+ *  - SearchEventsTypes.UpdateFilterOptions: Map<Filter.id, { searchTags: string[], options: string[] }>
  *  - SearchEventsTypes.UpdateSearchResult: { recipes: Recipe[] }
  */
 export const SearchEventsTypes = {
