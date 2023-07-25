@@ -5,6 +5,7 @@ import { Filters } from "./search/SearchEngine.js";
 import Filter from "./models/Filter.js";
 import FilterTagDropdownsList from "./templates/FilterTagDropdownsList.js";
 import RecipesCounter from "./templates/RecipesCounter.js";
+import TagsList from "./templates/TagsList.js";
 import SearchEngine from "./search/SearchEngine.js";
 import PubSub from "./events/PubSub.js";
 import { SearchEventsTypes } from "./events/searchEvents.js";
@@ -25,7 +26,6 @@ export default class App {
 
   constructor() {
     this.#recipesApi = new RecipesApi("data/recipes.json");
-    this.#recipes = [];
     this.#dropdownsFiltersContainer = document.querySelector(
       ".dropdowns-filters-list-container"
     );
@@ -51,9 +51,11 @@ export default class App {
       ({ displayName, id }) => new Filter(displayName, id)
     );
     const filterTagDropdownsList = new FilterTagDropdownsList(filters);
+    const tagsList = new TagsList();
     SearchEngine.initialize(recipes);
     const recipesCounter = new RecipesCounter(recipes.length);
     this.#dropdownsFiltersContainer.appendChild(filterTagDropdownsList.element);
+    this.#searchTagsContainer.appendChild(tagsList.element);
     this.#recipesCounterContainer.appendChild(recipesCounter.element);
     this.#recipesContainer.appendChild(recipeCardsList.element);
     this.#mainSearchInput.addEventListener("input", (event) => {
