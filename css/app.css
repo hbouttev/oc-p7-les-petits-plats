@@ -142,6 +142,10 @@ html {
     stroke: var(--light-grey);
 }
 
+.dropdown-item.active:hover {
+    font-weight: 700;
+}
+
 .active-options .dropdown-item.active:last-child {
     margin-bottom: 15px;
 }
