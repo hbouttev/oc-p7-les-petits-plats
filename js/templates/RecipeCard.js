@@ -21,7 +21,7 @@ export default class RecipeCard {
 
   #createRecipeCard() {
     const recipeCard = `
-      <div class="card h-100 rounded-5 border-0 overflow-hidden">
+      <div class="card shadow-sm h-100 rounded-5 border-0 overflow-hidden">
         <img
           src="assets/images/recipes/${this.#recipe.image}"
           class="card-img-top object-fit-cover recipe-card-img"
