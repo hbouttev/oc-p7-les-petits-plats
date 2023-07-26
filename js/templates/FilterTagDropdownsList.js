@@ -23,7 +23,7 @@ export default class FilterTagDropdownsList {
 
   #createFilterTagDropdownsList() {
     const filterTagDropdownsListContainer = `
-      <div>
+      <div class="d-flex flex-row gap-4">
       </div>
     `;
     this.#element = htmlToElement(filterTagDropdownsListContainer);

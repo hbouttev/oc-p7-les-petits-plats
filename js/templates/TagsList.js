@@ -27,7 +27,7 @@ export default class TagsList {
 
   #createTagsList() {
     const tagsListContainer = `
-      <div class="">
+      <div class="d-flex flex-row gap-3">
       </div>
     `;
     this.#element = htmlToElement(tagsListContainer);

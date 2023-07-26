@@ -33,9 +33,9 @@ export default class Tag {
 
   #createTag() {
     const tag = `
-      <div class="btn btn-primary position-relative py-3 ps-3 pe-5">
+      <div class="btn btn-secondary position-relative">
         ${this.#tag}
-        <button type="button" class="btn-close position-absolute top-50 end-0 translate-middle-y me-2 tag-close-button" aria-label="Close"></button>
+        <button type="button" class="btn-close position-absolute top-50 end-0 translate-middle-y me-3 tag-close-button" aria-label="Close"></button>
       </div>
     `;
     this.#element = htmlToElement(tag);

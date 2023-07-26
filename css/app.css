@@ -1,7 +1,10 @@
 body {
     --bs-body-font-family: 'Manrope', var(--bs-font-sans-serif);
+    --bs-primary: #FFD15B;
     --secondary-font: 'Anton', sans-serif;
     --secondary-color: #FFD15B;
+    --secondary-color-darken10: #ffc738;
+    --white-hover: #fafafa;
 }
 
 html {
@@ -87,11 +90,31 @@ html {
     max-height: 250px;
 }
 
-/*
- *
- * EN VRAI UTILISER COMPILATION SASS POUR PERSONNALISER BOOTSTRAP
- * Par ex, pour la police des headings, variables sass et pas css
- *
- * en attendant pour aller vite faire une class, mais après faire propre
- *
- */
+.tag-close-button {
+    height: 6px;
+    width: 6px;
+}
+
+.btn {
+    --bs-btn-border-width: 0;
+    padding: 1rem 5rem 1rem 1rem;
+    --bs-btn-border-radius: var(--bs-border-radius-lg);
+}
+
+.btn-primary {
+    --bs-btn-color: var(--bs-black);
+    --bs-btn-bg: var(--bs-white);
+    --bs-btn-hover-color: unset;
+    --bs-btn-hover-bg: var(--white-hover);
+    --bs-btn-active-bg: var(--bs-btn-bg);
+    --bs-btn-active-color: var(--bs-btn-color);
+}
+
+.btn-secondary {
+    --bs-btn-color: var(--bs-black);
+    --bs-btn-bg: var(--secondary-color);
+    --bs-btn-hover-color: unset;
+    --bs-btn-hover-bg: var(--secondary-color-darken10);
+    --bs-btn-active-bg: var(--bs-btn-bg);
+    --bs-btn-active-color: var(--bs-btn-color);
+}
