@@ -4,6 +4,7 @@ body {
     --secondary-font: 'Anton', sans-serif;
     --secondary-color: #FFD15B;
     --secondary-color-darken10: #ffc738;
+    --light-grey: #7A7A7A;
     --white-hover: #fafafa;
 }
 
@@ -117,4 +118,30 @@ html {
     --bs-btn-hover-bg: var(--secondary-color-darken10);
     --bs-btn-active-bg: var(--bs-btn-bg);
     --bs-btn-active-color: var(--bs-btn-color);
+}
+
+.recipes-counter-container {
+    font-family: var(--secondary-font);
+    font-size: 21px;
+}
+
+.dropdown-menu {
+    --bs-dropdown-link-active-color: black;
+    --bs-dropdown-link-active-bg: var(--secondary-color);
+    --bs-dropdown-border-width: 0;
+    font-size: 14px;
+}
+
+.dropdown-menu .form-control {
+    font-size: 14px;
+}
+
+.dropdown-filter-input svg {
+    height: 14px;
+    width: 14px;
+    stroke: var(--light-grey);
+}
+
+.active-options .dropdown-item.active:last-child {
+    margin-bottom: 15px;
 }

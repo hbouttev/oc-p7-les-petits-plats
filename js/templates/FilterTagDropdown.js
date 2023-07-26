@@ -64,8 +64,25 @@ export default class FilterTagDropdown {
           ${this.#filter.title}
         </button>
         <div class="dropdown-menu dropdown dropdown-filter">
-          <div class="px-4 py-3">
-            <input type="search" class="form-control" aria-label="Search" />
+          <div class="p-3">
+            <div class="position-relative dropdown-filter-input">
+              <input type="search" class="form-control rounded-0 pe-5" aria-label="Search" />
+              <div
+                class="position-absolute top-0 bottom-0 end-0 d-flex justify-content-center align-items-center me-2"
+              >
+                <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 28 28"
+                  fill="none"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <circle cx="10" cy="10" r="9.5" />
+                  <line x1="18.3536" y1="18.6464" x2="27.3536" y2="27.6464" />
+                </svg>
+              </div>
+            </div>
           </div>
           <div class="options overflow-auto">
             <div class="active-options">
