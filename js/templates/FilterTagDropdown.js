@@ -59,12 +59,13 @@ export default class FilterTagDropdown {
           type="button"
           data-bs-toggle="dropdown"
           data-bs-auto-close="outside"
+          data-bs-offset="0,-14"
           aria-expanded="false"
         >
           ${this.#filter.title}
         </button>
-        <div class="dropdown-menu dropdown dropdown-filter">
-          <div class="p-3">
+        <div class="dropdown-menu dropdown dropdown-filter rounded-top-0">
+          <div class="px-3 pb-3 pt-1">
             <div class="position-relative dropdown-filter-input">
               <input type="search" class="form-control rounded-0 pe-5" aria-label="Search" />
               <div

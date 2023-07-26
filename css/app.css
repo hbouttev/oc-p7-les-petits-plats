@@ -41,6 +41,10 @@ html {
     background: #555;
 }
 
+/*
+ * Hero
+ */
+
 .logo-img {
     height: 25px;
 }
@@ -83,16 +87,16 @@ html {
     background: #ededed
 }
 
+/*
+ * Cards
+ */
+
 .card-title {
     font-family: var(--secondary-font);
 }
 
 .recipe-card-img {
     height: 253px;
-}
-
-.secondary-bg-color {
-    background-color: var(--secondary-color) !important;
 }
 
 .options {
@@ -103,6 +107,10 @@ html {
     height: 6px;
     width: 6px;
 }
+
+/*
+ * Buttons (dropdown and tags)
+ */
 
 .btn {
     --bs-btn-border-width: 0;
@@ -128,15 +136,39 @@ html {
     --bs-btn-active-color: var(--bs-btn-color);
 }
 
-.recipes-counter-container {
-    font-family: var(--secondary-font);
-    font-size: 21px;
+/*
+ * Dropdowns
+ */
+
+.dropdown-toggle.show {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.dropdown-toggle::after {
+    /*display: none;*/
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    border-top: 1px solid black;
+    border-right: 1px solid black;
+    border-bottom: 0;
+    border-left: 0;
+    height: 10px;
+    width: 10px;
+    transform: translateY(calc(-50% - 2px)) rotate(135deg);
+    transition: transform 0.15s ease-in-out;
+}
+
+.dropdown-toggle.show::after {
+    transform: translateY(calc(-50% + 2px)) rotate(315deg);
 }
 
 .dropdown-menu {
     --bs-dropdown-link-active-color: black;
     --bs-dropdown-link-active-bg: var(--secondary-color);
     --bs-dropdown-border-width: 0;
+    --bs-dropdown-border-radius: var(--bs-border-radius-lg);
     font-size: 14px;
 }
 
@@ -156,4 +188,29 @@ html {
 
 .active-options .dropdown-item.active:last-child {
     margin-bottom: 15px;
+}
+
+/*
+ * Tags
+ */
+
+.search-tag {
+    font-size: 14px;
+}
+
+/*
+ * Recipes counter
+ */
+
+.recipes-counter-container {
+    font-family: var(--secondary-font);
+    font-size: 21px;
+}
+
+/*
+ * Utils
+ */
+
+.secondary-bg-color {
+    background-color: var(--secondary-color) !important;
 }

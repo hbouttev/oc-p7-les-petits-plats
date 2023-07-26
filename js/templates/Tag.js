@@ -33,7 +33,7 @@ export default class Tag {
 
   #createTag() {
     const tag = `
-      <div class="btn btn-secondary position-relative">
+      <div class="btn btn-secondary position-relative search-tag">
         ${this.#tag}
         <button type="button" class="btn-close position-absolute top-50 end-0 translate-middle-y me-3 tag-close-button" aria-label="Close"></button>
       </div>
