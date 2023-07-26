@@ -28,7 +28,7 @@ export default class RecipeCounter {
 
   #createRecipeCounter() {
     const recipeCounter = `
-      <p class="text-end">
+      <p class="text-end h-100 d-flex align-items-center justify-content-end gap-1">
         <span class="recipes-counter">${this.#numberOfRecipes}</span> recettes
       </p>
     `;
