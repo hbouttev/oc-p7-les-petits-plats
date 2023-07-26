@@ -151,7 +151,6 @@ html {
 }
 
 .dropdown-toggle::after {
-    /*display: none;*/
     position: absolute;
     top: 50%;
     right: 1rem;
@@ -187,8 +186,27 @@ html {
     stroke: var(--light-grey);
 }
 
-.dropdown-item.active:hover {
+.dropdown-item.active:hover,
+.dropdown-item.active:focus-visible {
     font-weight: 700;
+    padding-right: calc(1rem + 18px);
+}
+
+.dropdown-item.active:hover::after,
+.dropdown-item.active:focus-visible::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    background: url('../assets/images/icons/circle-plain-close.svg') no-repeat center center;
+    background-size: contain;
+    /*border-top: 1px solid var(--bs-body-color);*/
+    /*border-right: 1px solid var(--bs-body-color);*/
+    /*border-bottom: 0;*/
+    /*border-left: 0;*/
+    height: 15px;
+    width: 15px;
+    transform: translateY(-50%)
 }
 
 .active-options .dropdown-item.active:last-child {
