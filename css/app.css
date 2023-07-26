@@ -29,8 +29,8 @@ html {
     background: #555;
 }
 
-.logo-text {
-    font-family: var(--secondary-font);
+.logo-img {
+    height: 25px;
 }
 
 .hero-background {
