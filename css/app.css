@@ -1,5 +1,7 @@
 body {
     --bs-body-font-family: 'Manrope', var(--bs-font-sans-serif);
+    --palette-black: #1B1B1B;
+    --bs-body-color: var(--palette-black);
     --bs-primary: #FFD15B;
     --secondary-font: 'Anton', sans-serif;
     --secondary-color: #FFD15B;
@@ -77,10 +79,12 @@ html {
     height: 52px;
     width: 52px;
     stroke: #FFFFFF;
+    background-color: var(--palette-black);
 }
 
 .main-search-button:hover {
     stroke: #000000;
+    background-color: var(--secondary-color);
 }
 
 .main-background {
@@ -93,6 +97,7 @@ html {
 
 .card-title {
     font-family: var(--secondary-font);
+    color: var(--bs-black);
 }
 
 .recipe-card-img {
@@ -119,7 +124,7 @@ html {
 }
 
 .btn-primary {
-    --bs-btn-color: var(--bs-black);
+    --bs-btn-color: var(--bs-body-color);
     --bs-btn-bg: var(--bs-white);
     --bs-btn-hover-color: unset;
     --bs-btn-hover-bg: var(--white-hover);
@@ -128,7 +133,7 @@ html {
 }
 
 .btn-secondary {
-    --bs-btn-color: var(--bs-black);
+    --bs-btn-color: var(--bs-body-color);
     --bs-btn-bg: var(--secondary-color);
     --bs-btn-hover-color: unset;
     --bs-btn-hover-bg: var(--secondary-color-darken10);
@@ -150,8 +155,8 @@ html {
     position: absolute;
     top: 50%;
     right: 1rem;
-    border-top: 1px solid black;
-    border-right: 1px solid black;
+    border-top: 1px solid var(--bs-body-color);
+    border-right: 1px solid var(--bs-body-color);
     border-bottom: 0;
     border-left: 0;
     height: 10px;
