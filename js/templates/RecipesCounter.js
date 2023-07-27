@@ -37,7 +37,7 @@ export default class RecipeCounter {
   }
 
   #updateRecipeCounter() {
-    this.#counterElement.textContent = this.#numberOfRecipes;
+    this.#counterElement.textContent = this.#numberOfRecipes.toString();
   }
 
   handleUpdateNumberOfRecipes(event, data) {
