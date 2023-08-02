@@ -180,10 +180,16 @@ html {
     font-size: 14px;
 }
 
-.dropdown-filter-input svg {
+.dropdown-filter-input::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    background: url('../assets/images/icons/search-figma-lightgrey.svg') no-repeat center center;
+    background-size: contain;
     height: 14px;
     width: 14px;
-    stroke: var(--light-grey);
+    transform: translateY(-50%)
 }
 
 .dropdown-item.active:hover,
@@ -200,10 +206,6 @@ html {
     right: 1rem;
     background: url('../assets/images/icons/circle-plain-close.svg') no-repeat center center;
     background-size: contain;
-    /*border-top: 1px solid var(--bs-body-color);*/
-    /*border-right: 1px solid var(--bs-body-color);*/
-    /*border-bottom: 0;*/
-    /*border-left: 0;*/
     height: 15px;
     width: 15px;
     transform: translateY(-50%)
