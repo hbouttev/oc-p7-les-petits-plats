@@ -68,6 +68,9 @@ export default class FilterTagDropdown {
           <div class="px-3 pb-3 pt-1">
             <div class="position-relative dropdown-filter-input">
               <input type="search" class="form-control rounded-0 pe-5 position-relative" aria-label="Search" />
+              <button type="button" class="btn position-absolute top-50 end-0 translate-middle-y input-clear-button" aria-label="Clear">
+                <img src="../../assets/images/icons/close-lightgrey.svg" class="input-clear-icon" alt="Clear search input" />
+              </button>
             </div>
           </div>
           <div class="options overflow-auto">

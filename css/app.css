@@ -108,11 +108,6 @@ html {
     max-height: 250px;
 }
 
-.tag-close-button {
-    height: 6px;
-    width: 6px;
-}
-
 /*
  * Buttons (dropdown and tags)
  */
@@ -180,6 +175,24 @@ html {
     font-size: 14px;
 }
 
+.dropdown-filter-input input:focus + .input-clear-button {
+    display: block;
+}
+
+.input-clear-icon {
+    padding-bottom: 3px;
+}
+
+.input-clear-button {
+    --bs-btn-color: var(--light-grey);
+    padding: 0;
+    display: none;
+}
+
+.dropdown-filter-input .input-clear-button {
+    right: 30px !important;
+}
+
 .dropdown-filter-input::after {
     content: '';
     position: absolute;
@@ -221,6 +234,11 @@ html {
 
 .search-tag {
     font-size: 14px;
+}
+
+.tag-close-button {
+    height: 6px;
+    width: 6px;
 }
 
 /*
