@@ -24,9 +24,9 @@ export default class DropdownOption {
 
   #createOption() {
     const option = `
-      <button class="dropdown-item position-relative text-wrap" type="button">${
-        this.#option
-      }</button>
+      <button class="dropdown-item position-relative text-wrap" type="button">
+        ${this.#option}
+      </button>
     `;
     this.#element = htmlToElement(option);
     if (this.#active) {
