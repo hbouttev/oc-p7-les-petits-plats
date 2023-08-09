@@ -34,19 +34,44 @@ export default class RecipeCard {
           >
         </div>
         <div class="card-body p-4">
-          <h5 class="card-title my-2">${this.#recipe.name}</h5>
+          <h5 class="card-title fw-normal my-2">${this.#recipe.name}</h5>
           <h6
-            class="card-subtitle mt-4 mb-3 text-body-secondary text-uppercase fw-bold"
+            class="card-subtitle mt-4 mb-3 text-uppercase fw-bold color-light-grey"
           >
             Recette
           </h6>
           <p class="card-text">
             ${this.#recipe.description}
           </p>
+          <h6
+            class="card-subtitle mt-4 mb-3 text-uppercase fw-bold color-light-grey"
+          >
+            Ingrédients
+          </h6>
+          <div class="card-ingredients-container row row-cols-2 g-3"></div>
         </div>
       </div>
     `;
     this.#element = htmlToElement(recipeCard);
+    const ingredientsContainer = this.#element.querySelector(
+      ".card-ingredients-container"
+    );
+    const ingredients = this.#recipe.ingredients.map((ingredient) => {
+      const ingredientElement = `
+        <div class="card-ingredient w-50">
+          <p class="card-ingredient-name m-0 fw-medium">
+            ${ingredient.ingredient}
+          </p>
+          <p class="card-ingredient-quantity m-0 color-light-grey">
+            ${ingredient.quantity ?? ""} ${ingredient.unit ?? ""}
+          </p>
+        </div>
+      `;
+      return htmlToElement(ingredientElement);
+    });
+    for (const ingredient of ingredients) {
+      ingredientsContainer.appendChild(ingredient);
+    }
   }
 
   get recipe() {

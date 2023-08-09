@@ -99,9 +99,22 @@ main {
  * Cards
  */
 
+.card {
+    font-size: 14px;
+}
+
 .card-title {
     font-family: var(--secondary-font);
     color: var(--bs-black);
+    font-size: 18px;
+}
+
+.card-subtitle {
+    font-size: 12px;
+}
+
+.card-body {
+    --bs-card-color: var(--palette-black);
 }
 
 .recipe-card-img {
@@ -264,4 +277,8 @@ main {
 
 .secondary-bg-color {
     background-color: var(--secondary-color) !important;
+}
+
+.color-light-grey {
+    color: var(--light-grey);
 }
