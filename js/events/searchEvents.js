@@ -7,7 +7,8 @@
  *  - SearchEventsTypes.RemoveTag: { filterId: string, tag: string }
  *  - SearchEventsTypes.MainSearch: { search: string }
  *  - SearchEventsTypes.UpdateFilterOptions: Map<Filter.id, { searchTags: string[], options: string[] }>
- *  - SearchEventsTypes.UpdateSearchResult: { recipes: Recipe[] }
+ *  - SearchEventsTypes.UpdateSearchResult: { recipes: Recipe[], hadPartialBefore: boolean }
+ *  - SearchEventsTypes.NumberOfResults: { results: number }
  */
 export const SearchEventsTypes = {
   AddTag: "addSearchTag",
@@ -15,4 +16,5 @@ export const SearchEventsTypes = {
   MainSearch: "mainSearch",
   UpdateFilterOptions: "updateFilterOptions",
   UpdateSearchResult: "updateSearchResult",
+  NumberOfResults: "numberOfResults",
 };

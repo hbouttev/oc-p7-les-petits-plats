@@ -58,9 +58,17 @@ export default class SearchEngine {
   /** @type {Set<string>} */
   #filteredUtensils = new Set();
 
+  // Cache for partial search result if at least 3 recipes after intersection of all inputs results
+  /** @type {Recipe[]} */
+  #partialGlobalRecipesSearchResult = [];
+
   // Final recipes search result after intersection of all inputs results
   /** @type {Recipe[]} */
   #globalRecipesSearchResult = [];
+
+  // Flag to know if we have already sent partial results to the views
+  /** @type {boolean} */
+  #hasSentPartialResult = false;
 
   /**
    * @param {Recipe[]} recipes
@@ -87,12 +95,6 @@ export default class SearchEngine {
     this.#filteredIngredients = new Set(this.#allIngredients);
     this.#filteredAppliances = new Set(this.#allAppliances);
     this.#filteredUtensils = new Set(this.#allUtensils);
-
-    const allRecipesIds = new Set(this.#allRecipesById.keys());
-    this.#filteredRecipesByIngredients = new Set(allRecipesIds);
-    this.#filteredRecipesByAppliances = new Set(allRecipesIds);
-    this.#filteredRecipesByUtensils = new Set(allRecipesIds);
-    this.#filteredRecipesSearchInput = new Set(allRecipesIds);
 
     PubSub.subscribe(
       SearchEventsTypes.MainSearch,
@@ -158,9 +160,26 @@ export default class SearchEngine {
     );
   }
 
-  #notifyUpdateSearchResult() {
+  /**
+   * Send the search result. The result can be partial (3 recipes) or the
+   * remaining result after a previous partial (in that case, it can't be
+   * empty).
+   * hadPartialBefore is a flag informing that a previous partial result has
+   * been sent and that this is the remaining result.
+   * @param {Recipe[]} recipesSearchResult Search result to send, partial or remaining
+   * @param {boolean} partial Optional: Flag to know if the search result is
+   *  partial or not. Default false.
+   */
+  #notifyUpdateSearchResult(recipesSearchResult, { partial = false } = {}) {
     PubSub.publish(SearchEventsTypes.UpdateSearchResult, {
-      recipes: this.#globalRecipesSearchResult,
+      recipes: recipesSearchResult,
+      hadPartialBefore: partial ? false : this.#hasSentPartialResult,
+    });
+  }
+
+  #notifyNumberOfResults() {
+    PubSub.publish(SearchEventsTypes.NumberOfResults, {
+      results: this.#globalRecipesSearchResult.length,
     });
   }
 
@@ -219,11 +238,10 @@ export default class SearchEngine {
   // Filter methods
 
   #filterRecipesBySearchInput() {
+    this.#filteredRecipesSearchInput.clear();
     if (this.#mainSearchInput === "") {
-      this.#filteredRecipesSearchInput = new Set(this.#allRecipesById.keys());
       return;
     }
-    this.#filteredRecipesSearchInput.clear();
     for (const recipe of this.#allRecipes) {
       if (
         recipe.name.toLowerCase().includes(this.#mainSearchInput.toLowerCase())
@@ -252,11 +270,10 @@ export default class SearchEngine {
   }
 
   #filterRecipesByIngredients() {
+    this.#filteredRecipesByIngredients.clear();
     if (this.#ingredientsSearchTags.size === 0) {
-      this.#filteredRecipesByIngredients = new Set(this.#allRecipesById.keys());
       return;
     }
-    this.#filteredRecipesByIngredients.clear();
     for (const recipe of this.#allRecipes) {
       const matchNeeded = this.#ingredientsSearchTags.size;
       let matchCount = 0;
@@ -272,11 +289,10 @@ export default class SearchEngine {
   }
 
   #filterRecipesByAppliances() {
+    this.#filteredRecipesByAppliances.clear();
     if (this.#appliancesSearchTags.size === 0) {
-      this.#filteredRecipesByAppliances = new Set(this.#allRecipesById.keys());
       return;
     }
-    this.#filteredRecipesByAppliances.clear();
     for (const recipe of this.#allRecipes) {
       if (this.#appliancesSearchTags.has(recipe.appliance)) {
         this.#filteredRecipesByAppliances.add(recipe.id);
@@ -285,11 +301,10 @@ export default class SearchEngine {
   }
 
   #filterRecipesByUtensils() {
+    this.#filteredRecipesByUtensils.clear();
     if (this.#utensilsSearchTags.size === 0) {
-      this.#filteredRecipesByUtensils = new Set(this.#allRecipesById.keys());
       return;
     }
-    this.#filteredRecipesByUtensils.clear();
     for (const recipe of this.#allRecipes) {
       const matchNeeded = this.#utensilsSearchTags.size;
       let matchCount = 0;
@@ -304,6 +319,11 @@ export default class SearchEngine {
     }
   }
 
+  /**
+   * Update the new filters options available based on the global search
+   * result.
+   * this.#globalRecipesSearchResult has to be set before calling this method.
+   */
   #updateFiltersOptions() {
     this.#filteredIngredients.clear();
     this.#filteredAppliances.clear();
@@ -320,35 +340,133 @@ export default class SearchEngine {
   }
 
   /**
-   *
+   * Return the intersection of the filtered recipes ids of the given sets.
+   * It needs at least a base set if no other filter is applied.
+   * @param {Set<Recipe.id>} baseSet Base Set of filtered recipes ids to
+   *  intersect with
+   * @param {Set<Recipe.id>} sets Optional: Sets of filtered recipes ids to
+   *  intersect with the baseSet.
    * @returns {Set<Recipe.id>}
    */
-  #getIntersectionOfFilteredRecipes() {
-    const intersection = new Set();
-    for (const recipeId of this.#filteredRecipesSearchInput) {
-      if (
-        this.#filteredRecipesByAppliances.has(recipeId) &&
-        this.#filteredRecipesByUtensils.has(recipeId) &&
-        this.#filteredRecipesByIngredients.has(recipeId)
-      ) {
-        intersection.add(recipeId);
+  #intersectionOfFilteredRecipes(baseSet, ...sets) {
+    let intersection = new Set();
+    let hasSentPartialResult = false;
+    // if other sets, do the intersection, else return the baseSet
+    // in every case, if there is at least 3 results, send a partial result
+    if (sets.length > 0) {
+      for (const recipeId of baseSet) {
+        let isPresent = true;
+        for (const set of sets) {
+          if (!set.has(recipeId)) {
+            isPresent = false;
+            break;
+          }
+        }
+        if (isPresent) {
+          intersection.add(recipeId);
+          // send 3 first partial results if there is at least 3 results and
+          // clear the intersection to send only the remaining results at the
+          // end
+          if (!hasSentPartialResult && intersection.size === 3) {
+            this.#partialGlobalRecipesSearchResult = this.#getRecipesFromIds([
+              ...intersection,
+            ]);
+            this.#notifyUpdateSearchResult(
+              this.#partialGlobalRecipesSearchResult,
+              { partial: true }
+            );
+            hasSentPartialResult = true;
+            intersection.clear();
+          }
+        }
+      }
+    } else {
+      intersection = new Set(baseSet);
+      // check if baseSet has more than 3 elements, if yes, send first 3 elements
+      if (baseSet.size > 3) {
+        const partialResult = new Set();
+        const intersectionIterator = intersection.values();
+        for (let i = 0; i < 3; i++) {
+          const recipeId = intersectionIterator.next().value;
+          partialResult.add(recipeId);
+          intersection.delete(recipeId);
+        }
+        this.#partialGlobalRecipesSearchResult = this.#getRecipesFromIds([
+          ...partialResult,
+        ]);
+        this.#notifyUpdateSearchResult(this.#partialGlobalRecipesSearchResult, {
+          partial: true,
+        });
+        hasSentPartialResult = true;
       }
     }
+
+    this.#hasSentPartialResult = hasSentPartialResult;
     return intersection;
   }
 
   #updateSearchResult() {
-    const intersection = this.#getIntersectionOfFilteredRecipes();
-    this.#globalRecipesSearchResult = this.#getRecipesFromIds([
-      ...intersection,
-    ]);
-    this.#notifyUpdateSearchResult();
+    // we look for the sets that are currently filtered to intersect them, and
+    // if there is more than one we look for the smallest one to use as base
+    // set
+    const setsToIntersect = new Set();
+    let smallestSet;
+    if (this.#mainSearchInput.length > 0) {
+      setsToIntersect.add(this.#filteredRecipesSearchInput);
+    }
+    if (this.#appliancesSearchTags.size > 0) {
+      setsToIntersect.add(this.#filteredRecipesByAppliances);
+    }
+    if (this.#utensilsSearchTags.size > 0) {
+      setsToIntersect.add(this.#filteredRecipesByUtensils);
+    }
+    if (this.#ingredientsSearchTags.size > 0) {
+      setsToIntersect.add(this.#filteredRecipesByIngredients);
+    }
+    if (setsToIntersect.size > 1) {
+      for (const set of setsToIntersect) {
+        if (!smallestSet || set.size < smallestSet.size) {
+          smallestSet = set;
+        }
+      }
+    } else if (setsToIntersect.size === 1) {
+      smallestSet = setsToIntersect.values().next().value;
+    } else {
+      // no current filter, send all recipes (reset search result for views)
+      smallestSet = new Set(this.#allRecipesById.keys());
+    }
+    setsToIntersect.delete(smallestSet);
+
+    const intersection = this.#intersectionOfFilteredRecipes(
+      smallestSet,
+      ...setsToIntersect
+    );
+
+    // here, a partial result might have been sent if at least 3 results were
+    // found during intersection, so we need to check
+    if (this.#hasSentPartialResult && intersection.size === 0) {
+      // no more results found after first partial result was sent, just update
+      // filters and don't send an empty result
+      this.#globalRecipesSearchResult = this.#partialGlobalRecipesSearchResult;
+    } else if (this.#hasSentPartialResult) {
+      // concat first sent partial and remaining results in global search result
+      const remainingResults = this.#getRecipesFromIds([...intersection]);
+      this.#globalRecipesSearchResult =
+        this.#partialGlobalRecipesSearchResult.concat(remainingResults);
+      this.#notifyUpdateSearchResult(remainingResults); // not partial
+    } else {
+      this.#globalRecipesSearchResult = this.#getRecipesFromIds([
+        ...intersection,
+      ]);
+      this.#notifyUpdateSearchResult(this.#globalRecipesSearchResult); // not partial
+    }
+    this.#notifyNumberOfResults();
     this.#updateFiltersOptions();
     this.#notifyUpdateFiltersOptions();
   }
 
   /**
-   *
+   * Return an array of recipes from an array of recipes ids
    * @param {Recipe.id[]} recipesIds
    * @returns {Recipe[]}
    */

@@ -21,7 +21,7 @@ export default class RecipeCounter {
   #initialize() {
     this.#createRecipeCounter();
     PubSub.subscribe(
-      SearchEventsTypes.UpdateSearchResult,
+      SearchEventsTypes.NumberOfResults,
       this.handleUpdateNumberOfRecipes.bind(this)
     );
   }
@@ -41,8 +41,8 @@ export default class RecipeCounter {
   }
 
   handleUpdateNumberOfRecipes(event, data) {
-    const { recipes } = data;
-    this.#numberOfRecipes = recipes.length;
+    const { results } = data;
+    this.#numberOfRecipes = results;
     this.#updateRecipeCounter();
   }
 

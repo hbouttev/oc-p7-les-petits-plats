@@ -35,25 +35,38 @@ export default class RecipeCardsList {
   }
 
   #renderRecipeCardsList() {
-    const recipeCardContainer = `
+    if (this.#recipeCards.length !== 0) {
+      const recipeCardContainer = `
       <div class="col">
       </div>
     `;
-    this.#recipeCards.forEach((recipeCard) => {
-      const cardContainer = htmlToElement(recipeCardContainer);
-      cardContainer.appendChild(recipeCard.element);
-      this.#element.appendChild(cardContainer);
-    });
+      this.#recipeCards.forEach((recipeCard) => {
+        const cardContainer = htmlToElement(recipeCardContainer);
+        cardContainer.appendChild(recipeCard.element);
+        this.#element.appendChild(cardContainer);
+      });
+    } else {
+      const noRecipeCard = `
+        <div class="col">
+          <p class="text-center">
+            Aucune recette ne contient 'XXX', vous pouvez chercher « tarte aux pommes », « poisson », etc.
+          </p>
+        </div>
+      `;
+      this.#element.appendChild(htmlToElement(noRecipeCard));
+    }
   }
 
-  #updateRecipeCardsList() {
+  #clearRecipeCardsList() {
     removeAllChildNodes(this.#element);
-    this.#renderRecipeCardsList();
   }
 
-  handleUpdateSearchResult(event, { recipes }) {
+  handleUpdateSearchResult(event, { recipes, hadPartialBefore }) {
     this.#recipeCards = recipes.map((recipe) => new RecipeCard(recipe));
-    this.#updateRecipeCardsList();
+    if (!hadPartialBefore) {
+      this.#clearRecipeCardsList();
+    }
+    this.#renderRecipeCardsList();
   }
 
   get element() {
