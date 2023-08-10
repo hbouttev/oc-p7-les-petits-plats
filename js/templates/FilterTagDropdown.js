@@ -88,6 +88,8 @@ export default class FilterTagDropdown {
     this.#filteredOptionsContainer =
       this.#element.querySelector(".filtered-options");
     this.#searchInput = this.#element.querySelector("input");
+    const clearButton = this.#element.querySelector(".input-clear-button");
+    clearButton.addEventListener("mousedown", this.handleClearInput.bind(this));
   }
 
   /**
@@ -202,6 +204,15 @@ export default class FilterTagDropdown {
   handleUpdateFilterOptions(event, optionsMap) {
     if (!optionsMap.has(this.#filter.id)) return;
     this.#updateOptions(optionsMap);
+  }
+
+  /**
+   * Handler for the clear input button
+   */
+  handleClearInput() {
+    console.log("clear input");
+    this.#searchInput.value = "";
+    this.#filterAndRenderOptions();
   }
 
   get element() {
