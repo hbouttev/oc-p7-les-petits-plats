@@ -8,6 +8,10 @@ export default class RecipeCardsList {
   #recipeCards = [];
   /** @type {HTMLElement} */
   #element = null;
+  /** @type {HTMLElement} */
+  #cardsContainer = null;
+  /** @type {HTMLElement} */
+  #errorContainer = null;
 
   /**
    * @param {Recipe[]} recipes is an array of Recipe
@@ -27,14 +31,18 @@ export default class RecipeCardsList {
 
   #createRecipeCardsList() {
     const recipeCardsListContainer = `
-      <div class="row row-cols-3 g-5">
+      <div>
+        <div class="row error-container"></div>
+        <div class="row row-cols-3 g-5 cards-container"></div>
       </div>
     `;
     this.#element = htmlToElement(recipeCardsListContainer);
+    this.#cardsContainer = this.#element.querySelector(".cards-container");
+    this.#errorContainer = this.#element.querySelector(".error-container");
     this.#renderRecipeCardsList();
   }
 
-  #renderRecipeCardsList() {
+  #renderRecipeCardsList(searchInput = "") {
     if (this.#recipeCards.length !== 0) {
       const recipeCardContainer = `
       <div class="col">
@@ -43,30 +51,31 @@ export default class RecipeCardsList {
       this.#recipeCards.forEach((recipeCard) => {
         const cardContainer = htmlToElement(recipeCardContainer);
         cardContainer.appendChild(recipeCard.element);
-        this.#element.appendChild(cardContainer);
+        this.#cardsContainer.appendChild(cardContainer);
       });
     } else {
       const noRecipeCard = `
-        <div class="col">
+        <div class="row">
           <p class="text-center">
-            Aucune recette ne contient 'XXX', vous pouvez chercher « tarte aux pommes », « poisson », etc.
+            Aucune recette ne contient '${searchInput}', vous pouvez chercher « tarte aux pommes », « poisson », etc.
           </p>
         </div>
       `;
-      this.#element.appendChild(htmlToElement(noRecipeCard));
+      this.#errorContainer.appendChild(htmlToElement(noRecipeCard));
     }
   }
 
   #clearRecipeCardsList() {
-    removeAllChildNodes(this.#element);
+    removeAllChildNodes(this.#cardsContainer);
+    removeAllChildNodes(this.#errorContainer);
   }
 
-  handleUpdateSearchResult(event, { recipes, hadPartialBefore }) {
+  handleUpdateSearchResult(event, { recipes, hadPartialBefore, searchInput }) {
     this.#recipeCards = recipes.map((recipe) => new RecipeCard(recipe));
     if (!hadPartialBefore) {
       this.#clearRecipeCardsList();
     }
-    this.#renderRecipeCardsList();
+    this.#renderRecipeCardsList(searchInput);
   }
 
   get element() {

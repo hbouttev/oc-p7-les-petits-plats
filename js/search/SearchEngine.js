@@ -174,6 +174,7 @@ export default class SearchEngine {
     PubSub.publish(SearchEventsTypes.UpdateSearchResult, {
       recipes: recipesSearchResult,
       hadPartialBefore: partial ? false : this.#hasSentPartialResult,
+      searchInput: this.#mainSearchInput,
     });
   }
 
