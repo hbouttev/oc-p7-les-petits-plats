@@ -67,5 +67,12 @@ export default class App {
         });
       }
     });
+    const mainInputClearButton = document.querySelector(
+      ".main-search-input ~ .input-clear-button"
+    );
+    mainInputClearButton.addEventListener("mousedown", () => {
+      this.#mainSearchInput.value = "";
+      PubSub.publish(SearchEventsTypes.MainSearch, { search: "" });
+    });
   }
 }

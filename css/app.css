@@ -87,6 +87,20 @@ html {
     background-color: var(--secondary-color);
 }
 
+.main-search-input ~ .input-clear-button {
+    right: 85px !important;
+    padding-top: 2px;
+}
+
+.main-search-input ~ .input-clear-button .input-clear-icon {
+    height: 35px;
+    padding-bottom: 0;
+}
+
+.main-search-input:focus ~ .input-clear-button {
+    display: block;
+}
+
 /*
  * Main
  */
