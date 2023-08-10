@@ -342,6 +342,13 @@ export default class SearchEngine {
   /**
    * Return the intersection of the filtered recipes ids of the given sets.
    * It needs at least a base set if no other filter is applied.
+   * If there is at least 3 results, it will send a partial result.
+   * The returned intersection is either the remaining result if there was at
+   * least 3 results, or the total result if there was less than 3 results (or
+   * 3 if only one set was given). If there is no result at all or no more
+   * results after a partial send, it will return an empty set.
+   * The internal flag this.#hasSentPartialResult will be set to true if a
+   * partial result has been sent.
    * @param {Set<Recipe.id>} baseSet Base Set of filtered recipes ids to
    *  intersect with
    * @param {Set<Recipe.id>} sets Optional: Sets of filtered recipes ids to
