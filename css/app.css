@@ -8,6 +8,7 @@ body {
     --secondary-color-darken10: #ffc738;
     --light-grey: #7A7A7A;
     --white-hover: #fafafa;
+    --hero-height: 667px;
 }
 
 /* clears the 'X' from Chrome */
@@ -54,8 +55,7 @@ html {
 .hero-background {
     background: no-repeat center center url('../assets/images/hero-from-figma.png');
     background-size: cover;
-    height: 667px; /* to remove after inner component have there height and padding / margin, replace with padding ? */
-    /*padding: 0;*/
+    height: var(--hero-height); /* to remove after inner component have there height and padding / margin, replace with padding ? */
 }
 
 .hero-image {
@@ -87,8 +87,12 @@ html {
     background-color: var(--secondary-color);
 }
 
-.main-background {
-    background: #ededed
+/*
+ * Main
+ */
+
+main {
+    min-height: calc(100vh - var(--hero-height));
 }
 
 /*
@@ -253,6 +257,10 @@ html {
 /*
  * Utils
  */
+
+.main-background {
+    background: #ededed
+}
 
 .secondary-bg-color {
     background-color: var(--secondary-color) !important;
