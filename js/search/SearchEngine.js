@@ -491,4 +491,29 @@ export default class SearchEngine {
   #removeSearchTagsFromTags(tags, searchTags) {
     return setDifference(tags, searchTags);
   }
+
+  /**
+   * Use benchmark with a SearchEngine instance only to remove UI rendering
+   * subscribing to PubSub. The benchmark still includes the notify methods,
+   * but as they are used on an empty PubSub, they should not impact the
+   * benchmark (the time to execute them is constant).
+   * @param {string[]} inputs Inputs to benchmark
+   * @param {number} iterations Number of iterations for each input
+   * @returns {Object[]} Array of results for each input
+   */
+  benchMarkSearchInput({ inputs, iterations }) {
+    const results = [];
+    for (const input of inputs) {
+      const startTime = performance.now();
+      for (let i = 0; i < iterations; i++) {
+        this.handleUpdateSearchInput("benchmark", { search: input });
+      }
+      const endTime = performance.now();
+      const totalTime = endTime - startTime;
+      const averageTime = totalTime / iterations;
+      const operationsPerSecond = 1000 / averageTime;
+      results.push({ input, totalTime, averageTime, operationsPerSecond });
+    }
+    return results;
+  }
 }
