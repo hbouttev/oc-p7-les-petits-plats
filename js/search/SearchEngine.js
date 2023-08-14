@@ -243,7 +243,7 @@ export default class SearchEngine {
     if (this.#mainSearchInput === "") {
       return;
     }
-    for (const recipe of this.#allRecipes) {
+    this.#allRecipes.forEach((recipe) => {
       if (
         recipe.name.toLowerCase().includes(this.#mainSearchInput.toLowerCase())
       ) {
@@ -267,7 +267,7 @@ export default class SearchEngine {
       ) {
         this.#filteredRecipesSearchInput.add(recipe.id);
       }
-    }
+    });
   }
 
   #filterRecipesByIngredients() {
@@ -275,18 +275,18 @@ export default class SearchEngine {
     if (this.#ingredientsSearchTags.size === 0) {
       return;
     }
-    for (const recipe of this.#allRecipes) {
+    this.#allRecipes.forEach((recipe) => {
       const matchNeeded = this.#ingredientsSearchTags.size;
       let matchCount = 0;
-      for (const ingredient of recipe.ingredients) {
+      recipe.ingredients.forEach((ingredient) => {
         if (this.#ingredientsSearchTags.has(ingredient.ingredient)) {
           matchCount++;
         }
-      }
+      });
       if (matchCount === matchNeeded) {
         this.#filteredRecipesByIngredients.add(recipe.id);
       }
-    }
+    });
   }
 
   #filterRecipesByAppliances() {
@@ -294,11 +294,11 @@ export default class SearchEngine {
     if (this.#appliancesSearchTags.size === 0) {
       return;
     }
-    for (const recipe of this.#allRecipes) {
+    this.#allRecipes.forEach((recipe) => {
       if (this.#appliancesSearchTags.has(recipe.appliance)) {
         this.#filteredRecipesByAppliances.add(recipe.id);
       }
-    }
+    });
   }
 
   #filterRecipesByUtensils() {
@@ -306,18 +306,18 @@ export default class SearchEngine {
     if (this.#utensilsSearchTags.size === 0) {
       return;
     }
-    for (const recipe of this.#allRecipes) {
+    this.#allRecipes.forEach((recipe) => {
       const matchNeeded = this.#utensilsSearchTags.size;
       let matchCount = 0;
-      for (const utensil of recipe.utensils) {
+      recipe.utensils.forEach((utensil) => {
         if (this.#utensilsSearchTags.has(utensil)) {
           matchCount++;
         }
-      }
+      });
       if (matchCount === matchNeeded) {
         this.#filteredRecipesByUtensils.add(recipe.id);
       }
-    }
+    });
   }
 
   /**
@@ -329,15 +329,15 @@ export default class SearchEngine {
     this.#filteredIngredients.clear();
     this.#filteredAppliances.clear();
     this.#filteredUtensils.clear();
-    for (const recipe of this.#globalRecipesSearchResult) {
-      for (const ingredient of recipe.ingredients) {
+    this.#globalRecipesSearchResult.forEach((recipe) => {
+      recipe.ingredients.forEach((ingredient) => {
         this.#filteredIngredients.add(ingredient.ingredient);
-      }
+      });
       this.#filteredAppliances.add(recipe.appliance);
-      for (const utensil of recipe.utensils) {
+      recipe.utensils.forEach((utensil) => {
         this.#filteredUtensils.add(utensil);
-      }
-    }
+      });
+    });
   }
 
   /**
@@ -362,14 +362,13 @@ export default class SearchEngine {
     // if other sets, do the intersection, else return the baseSet
     // in every case, if there is at least 3 results, send a partial result
     if (sets.length > 0) {
-      for (const recipeId of baseSet) {
+      baseSet.forEach((recipeId) => {
         let isPresent = true;
-        for (const set of sets) {
+        sets.forEach((set) => {
           if (!set.has(recipeId)) {
             isPresent = false;
-            break;
           }
-        }
+        });
         if (isPresent) {
           intersection.add(recipeId);
           // send 3 first partial results if there is at least 3 results and
@@ -387,18 +386,18 @@ export default class SearchEngine {
             intersection.clear();
           }
         }
-      }
+      });
     } else {
       intersection = new Set(baseSet);
       // check if baseSet has more than 3 elements, if yes, send first 3 elements
       if (baseSet.size > 3) {
         const partialResult = new Set();
         const intersectionIterator = intersection.values();
-        for (let i = 0; i < 3; i++) {
+        [1, 2, 3].forEach(() => {
           const recipeId = intersectionIterator.next().value;
           partialResult.add(recipeId);
           intersection.delete(recipeId);
-        }
+        });
         this.#partialGlobalRecipesSearchResult = this.#getRecipesFromIds([
           ...partialResult,
         ]);
@@ -432,11 +431,11 @@ export default class SearchEngine {
       setsToIntersect.add(this.#filteredRecipesByIngredients);
     }
     if (setsToIntersect.size > 1) {
-      for (const set of setsToIntersect) {
+      setsToIntersect.forEach((set) => {
         if (!smallestSet || set.size < smallestSet.size) {
           smallestSet = set;
         }
-      }
+      });
     } else if (setsToIntersect.size === 1) {
       smallestSet = setsToIntersect.values().next().value;
     } else {
