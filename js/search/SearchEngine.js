@@ -256,16 +256,14 @@ export default class SearchEngine {
       ) {
         this.#filteredRecipesSearchInput.add(recipe.id);
       }
-      if (
-        recipe.ingredients
-          .map((ingredient) => ingredient.ingredient)
-          .some((ingredient) =>
-            ingredient
-              .toLowerCase()
-              .includes(this.#mainSearchInput.toLowerCase())
-          )
-      ) {
-        this.#filteredRecipesSearchInput.add(recipe.id);
+      for (let i = 0; i < recipe.ingredients.length; i++) {
+        if (
+          recipe.ingredients[i].ingredient
+            .toLowerCase()
+            .includes(this.#mainSearchInput.toLowerCase())
+        ) {
+          this.#filteredRecipesSearchInput.add(recipe.id);
+        }
       }
     }
   }
@@ -479,7 +477,11 @@ export default class SearchEngine {
    * @returns {Recipe[]}
    */
   #getRecipesFromIds(recipesIds) {
-    return recipesIds.map((id) => this.#allRecipesById.get(id));
+    const recipes = [];
+    for (let i = 0; i < recipesIds.length; i++) {
+      recipes.push(this.#allRecipesById.get(recipesIds[i]));
+    }
+    return recipes;
   }
 
   /**
