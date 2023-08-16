@@ -248,15 +248,13 @@ export default class SearchEngine {
         recipe.name.toLowerCase().includes(this.#mainSearchInput.toLowerCase())
       ) {
         this.#filteredRecipesSearchInput.add(recipe.id);
-      }
-      if (
+      } else if (
         recipe.description
           .toLowerCase()
           .includes(this.#mainSearchInput.toLowerCase())
       ) {
         this.#filteredRecipesSearchInput.add(recipe.id);
-      }
-      if (
+      } else if (
         recipe.ingredients
           .map((ingredient) => ingredient.ingredient)
           .some((ingredient) =>
