@@ -248,6 +248,7 @@ export default class SearchEngine {
         recipe.name.toLowerCase().includes(this.#mainSearchInput.toLowerCase())
       ) {
         this.#filteredRecipesSearchInput.add(recipe.id);
+        continue;
       }
       if (
         recipe.description
@@ -255,6 +256,7 @@ export default class SearchEngine {
           .includes(this.#mainSearchInput.toLowerCase())
       ) {
         this.#filteredRecipesSearchInput.add(recipe.id);
+        continue;
       }
       for (let i = 0; i < recipe.ingredients.length; i++) {
         if (
@@ -263,6 +265,7 @@ export default class SearchEngine {
             .includes(this.#mainSearchInput.toLowerCase())
         ) {
           this.#filteredRecipesSearchInput.add(recipe.id);
+          break;
         }
       }
     }
